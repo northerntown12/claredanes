@@ -275,8 +275,8 @@ button:nth-child(2) {
 
     .square {
         min-width: 0;
-        min-height: auto;
-        height: auto; /* 높이를 자동(auto)으로 풀어주어 내용이 다 보이게 설정 */
+        min-height: 220px;
+        height: auto; 
     }
 
     .calculator {
