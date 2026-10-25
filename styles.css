@@ -329,7 +329,11 @@ button:nth-child(2) {
     }
 }
 
-.square.bottom-left,
+.square.bottom-left 
+   {display: flex;
+    justify-content: center;
+    align-items:  center;
+}
 .square.bottom-right {
     display: flex;
     justify-content: center;
