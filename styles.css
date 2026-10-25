@@ -57,7 +57,7 @@ body {
     border: 2px solid #ff69b4;
 }
 
-.square.bottom-left {
+.square bottom-left {
     border: 2px solid #5d4037;
     .square.bottom-left {
     border: 2px solid #5d4037;
@@ -68,7 +68,7 @@ body {
     overflow: hidden;
 }
 
-.square.bottom-left::before {
+.square bottom-left::before {
     content: "";
     position: absolute;
     top: 0;
