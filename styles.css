@@ -351,19 +351,29 @@ button:nth-child(2) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* 상단으로 바짝 붙여 위치 조정 */
+    padding-top: 4px; /* 위쪽 여백 축소 */
     width: 100%;
     height: 100%;
-    padding: 10px;
-    z-index: 2; /* 배경 이미지 위 레이어 */
+    z-index: 2; 
     position: relative;
 }
 
 .lotto-container h2 {
     color: #fff;
-    font-size: 1.2rem;
-    margin: 0 0 10px 0;
+    font-size: 1.05rem;
+    margin: 0 0 4px 0; /* 여백을 줄여 전체적으로 위로 배치 */
+    padding: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 6px; /* 화살, 글자, 원화 기호 사이 간격 */
+}
+.lotto-container h2 .arrow,
+.lotto-container h2 .won-symbol {
+    color: #ffd700; /* 반짝이는 골드 컬러 */
+    font-size: 0.95rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* 로또 공 배치 */
