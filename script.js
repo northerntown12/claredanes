@@ -121,46 +121,71 @@ document.querySelectorAll('button').forEach(button => {
 }); 
 
 
-// Web Audio API를 활용한 효과음 생성기 (외부 파일 없이 작동)
+// Web Audio API를 활용한 효과음 생성기
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// 슬롯머신 클릭/스톱 소리
-function playClickSound() {
+// 1. 기계식 번호판이 돌아가는 '짜각 짜각' 소리
+function playFlipSound() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
     
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.05);
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(140, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.03);
     
-    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(900, audioCtx.currentTime);
     
-    osc.connect(gain);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+    
+    osc.connect(filter);
+    filter.connect(gain);
     gain.connect(audioCtx.destination);
     
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.05);
+    osc.stop(audioCtx.currentTime + 0.03);
 }
 
-// 잭팟/완료 효과음
-function playWinSound() {
+// 2. 1984 LA 올림픽 시상대 팡파레 (웅장한 브라스 사운드)
+function playOlympicsFanfare() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
-    const notes = [523.25, 659.25, 783.99, 1046.50]; // 도, 미, 솔, 도
-    notes.forEach((freq, index) => {
-        setTimeout(() => {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.2);
-        }, index * 80);
+    const fanfareNotes = [
+        { freq: 293.66, duration: 0.2 }, // D4
+        { freq: 392.00, duration: 0.2 }, // G4
+        { freq: 440.00, duration: 0.2 }, // A4
+        { freq: 493.88, duration: 0.2 }, // B4
+        { freq: 587.33, duration: 0.6 }, // D5 (웅장하게)
+        { freq: 493.88, duration: 0.2 }, // B4
+        { freq: 587.33, duration: 0.9 }  // D5 (피날레)
+    ];
+    
+    let time = audioCtx.currentTime;
+    fanfareNotes.forEach(note => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+        
+        osc.type = 'sawtooth'; // 브라스(관악기) 느낌의 풍성한 파형
+        osc.frequency.setValueAtTime(note.freq, time);
+        
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(1600, time);
+        
+        gain.gain.setValueAtTime(0.01, time);
+        gain.gain.linearRampToValueAtTime(0.22, time + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + note.duration);
+        
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start(time);
+        osc.stop(time + note.duration);
+        
+        time += note.duration + 0.04;
     });
 }
 
@@ -173,9 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let rollIntervals = [];
     let finalNumbers = [];
 
-    // 로또 번호 공 색상 क्लास 부여 함수
     function setBallColor(ballEl, num) {
-        ballEl.className = "ball"; // 초기화
+        ballEl.className = "ball";
         if (num >= 1 && num <= 10) ballEl.classList.add("num-1");
         else if (num <= 20) ballEl.classList.add("num-11");
         else if (num <= 30) ballEl.classList.add("num-21");
@@ -183,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (num <= 45) ballEl.classList.add("num-41");
     }
 
-    // 중복 없는 7개 번호(6개 + 보너스 1개) 생성
     function generateLottoNumbers() {
         const numbers = Array.from({ length: 45 }, (_, i) => i + 1);
         for (let i = numbers.length - 1; i > 0; i--) {
@@ -195,9 +218,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return [...mainNumbers, bonusNumber];
     }
 
-    // 버튼 클릭 이벤트
     lottoBtn.addEventListener("click", () => {
-        if (isRolling) return; // 이미 회전 중이면 무시
+        if (isRolling) return;
 
         isRolling = true;
         lottoBtn.innerText = "추첨 중...";
@@ -205,36 +227,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
         finalNumbers = generateLottoNumbers();
 
-        // 1단계: 모든 공 빠르게 회전 (초시계 효과)
+        // 1단계: 모든 공이 각자의 색상을 유지하며 5초 동안 빠르게 회전 + 짜각짜각 소리
         ballEls.forEach((ball, idx) => {
             ball.classList.add("rolling");
             rollIntervals[idx] = setInterval(() => {
                 const randomNum = Math.floor(Math.random() * 45) + 1;
                 ball.innerText = randomNum;
                 setBallColor(ball, randomNum);
-            }, 50);
+                playFlipSound();
+            }, 60);
         });
 
-        // 2단계: 첫번째 공부터 0.35초 간격으로 탁- 탁- 멈추기
-        ballEls.forEach((ball, idx) => {
-            setTimeout(() => {
-                clearInterval(rollIntervals[idx]);
-                ball.classList.remove("rolling");
-                
-                const num = finalNumbers[idx];
-                ball.innerText = num;
-                setBallColor(ball, num);
-                
-                playClickSound(); // 공이 딱 멈출 때마다 사운드 재생
+        // 2단계: 정확히 5초(5000ms) 뒤에 왼쪽 공부터 0.4초 간격으로 차례대로 정지
+        setTimeout(() => {
+            ballEls.forEach((ball, idx) => {
+                setTimeout(() => {
+                    clearInterval(rollIntervals[idx]);
+                    ball.classList.remove("rolling");
+                    
+                    const num = finalNumbers[idx];
+                    ball.innerText = num;
+                    setBallColor(ball, num);
+                    
+                    playFlipSound(); // 멈출 때도 찰칵 소리
 
-                // 마지막 공(보너스 공)까지 다 멈췄을 때
-                if (idx === ballEls.length - 1) {
-                    isRolling = false;
-                    lottoBtn.innerText = "AGAIN!";
-                    lottoBtn.style.opacity = "1";
-                    setTimeout(playWinSound, 200); // 잭팟 축하 사운드
-                }
-            }, 800 + idx * 350); // 시작 후 0.8초 뒤부터 차례대로 멈춤
-        });
+                    // 마지막 보너스 공까지 모두 멈췄을 때 팡파레 연주
+                    if (idx === ballEls.length - 1) {
+                        isRolling = false;
+                        lottoBtn.innerText = "AGAIN!";
+                        lottoBtn.style.opacity = "1";
+                        setTimeout(playOlympicsFanfare, 250);
+                    }
+                }, idx * 400); // 0.4초 간격 순차 정지
+            });
+        }, 5000); // 5초 동안 신나게 회전
     });
 });
