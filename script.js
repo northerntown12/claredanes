@@ -124,29 +124,29 @@ document.querySelectorAll('button').forEach(button => {
 // Web Audio API를 활용한 효과음 생성기
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. 기계식 번호판이 돌아가는 '짜각 짜각' 소리
+// 1. 가늘고 빠른 톤의 '짤깍짤깍' 번호판 회전 소리
 function playFlipSound() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
     
-    osc.type = 'square';
-    osc.frequency.setValueAtTime(140, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.03);
+    osc.type = 'sine'; // 가늘고 부드러운 톤
+    osc.frequency.setValueAtTime(1400, audioCtx.currentTime); // 높은 주파수로 가늘게 설정
+    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015); // 아주 짧고 빠르게 떨어짐
     
-    filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(900, audioCtx.currentTime);
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
     
-    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015);
     
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(audioCtx.destination);
     
     osc.start();
-    osc.stop(audioCtx.currentTime + 0.03);
+    osc.stop(audioCtx.currentTime + 0.015);
 }
 
 // 2. 1984 LA 올림픽 시상대 팡파레 (웅장한 브라스 사운드)
@@ -157,9 +157,9 @@ function playOlympicsFanfare() {
         { freq: 392.00, duration: 0.2 }, // G4
         { freq: 440.00, duration: 0.2 }, // A4
         { freq: 493.88, duration: 0.2 }, // B4
-        { freq: 587.33, duration: 0.6 }, // D5 (웅장하게)
+        { freq: 587.33, duration: 0.6 }, // D5 
         { freq: 493.88, duration: 0.2 }, // B4
-        { freq: 587.33, duration: 0.9 }  // D5 (피날레)
+        { freq: 587.33, duration: 0.9 }  // D5 
     ];
     
     let time = audioCtx.currentTime;
@@ -168,7 +168,7 @@ function playOlympicsFanfare() {
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
         
-        osc.type = 'sawtooth'; // 브라스(관악기) 느낌의 풍성한 파형
+        osc.type = 'sawtooth'; 
         osc.frequency.setValueAtTime(note.freq, time);
         
         filter.type = 'lowpass';
@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         finalNumbers = generateLottoNumbers();
 
-        // 1단계: 모든 공이 각자의 색상을 유지하며 5초 동안 빠르게 회전 + 짜각짜각 소리
+        // 1단계: 5초 동안 빠르게 회전하며 가느다란 짤깍 소리 재생 (간격을 45ms로 더 빠르게 설정)
         ballEls.forEach((ball, idx) => {
             ball.classList.add("rolling");
             rollIntervals[idx] = setInterval(() => {
@@ -235,10 +235,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 ball.innerText = randomNum;
                 setBallColor(ball, randomNum);
                 playFlipSound();
-            }, 60);
+            }, 45);
         });
 
-        // 2단계: 정확히 5초(5000ms) 뒤에 왼쪽 공부터 0.4초 간격으로 차례대로 정지
+        // 2단계: 5초 뒤 왼쪽 공부터 0.4초 간격으로 차례대로 정지
         setTimeout(() => {
             ballEls.forEach((ball, idx) => {
                 setTimeout(() => {
@@ -249,17 +249,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     ball.innerText = num;
                     setBallColor(ball, num);
                     
-                    playFlipSound(); // 멈출 때도 찰칵 소리
+                    playFlipSound(); 
 
-                    // 마지막 보너스 공까지 모두 멈췄을 때 팡파레 연주
+                    // 마지막 공까지 모두 멈췄을 때 올림픽 팡파레 연주
                     if (idx === ballEls.length - 1) {
                         isRolling = false;
                         lottoBtn.innerText = "AGAIN!";
                         lottoBtn.style.opacity = "1";
                         setTimeout(playOlympicsFanfare, 250);
                     }
-                }, idx * 400); // 0.4초 간격 순차 정지
+                }, idx * 400); 
             });
-        }, 5000); // 5초 동안 신나게 회전
+        }, 5000); 
     });
 });
