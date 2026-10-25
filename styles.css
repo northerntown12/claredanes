@@ -58,9 +58,7 @@ body {
 }
 
 .square bottom-left {
-    border: 2px solid #5d4037;
-    .square.bottom-left {
-    border: 2px solid #5d4037;
+    border: 2px solid #5d4037;   
     display: flex;
     justify-content: center;
     align-items: center;
