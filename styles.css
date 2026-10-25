@@ -66,7 +66,6 @@ body {
     overflow: hidden;
 }
 
-/* 로또 추첨기 배경 이미지 설정 */
 .square.bottom-left::before {
     content: "";
     position: absolute;
@@ -77,18 +76,18 @@ body {
     background-image: url("casinogirl.jpg"); 
     background-size: cover;
     background-position: center;
-    opacity: 0.6; /* 이미지가 조금 더 잘 보이도록 투명도 조절 (원하시면 0.25~0.4 사이로 조절 가능) */
-    z-index: 1;    /* 배경 레이어 */
+    opacity: 0.75; /* 그림이 더 선명하고 진하게 보이도록 상향 조정 */
+    z-index: 1;    
 }
 
 /* 박스 안의 글자(로또 추첨기 제목 등)가 배경 위로 확실히 올라오도록 설정 */
-.square.bottom-left h2 {
-    position: relative;
-    z-index: 2; /* 글자 레이어를 배경보다 위로 배치 */
-    color: #fff; /* 배경 위에서 잘 보이도록 글자색을 하얀색으로 지정 (필요시 변경 가능) */
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* 글자가 선명하게 보이도록 그림자 효과 추가 */
+.lotto-container h2 {
+    color: #fff;
+    font-size: 1.1rem;
+    margin: 0 0 5px 0; /* 위아래 여백을 줄여서 위로 올림 */
+    padding: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
-
 
 
     
