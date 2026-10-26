@@ -446,7 +446,7 @@ button:nth-child(2) {
 /* 노랑: 15~21 */
 .ball.num-15 {
     background: radial-gradient(circle at 35% 35%, #ffff8d 0%, #ffea00 50%, #f57f17 100%);
-    color: #333;
+    color: #fff;
 }
 
 /* 초록: 22~28 */
