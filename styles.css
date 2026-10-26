@@ -335,13 +335,14 @@ button:nth-child(2) {
     align-items:  center;
 }
 .square.bottom-right {
+    border: 2px solid #f44336;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    padding-top: 6px; /* 👈 로또와 동일한 상단 여백 부여 */
 }
 
-.square.bottom-left h2,
-.square.bottom-right h2 {
+.square.bottom-left h2{
     margin: 0;
     padding: 12px 8px;
     width: 100%;
@@ -349,8 +350,15 @@ button:nth-child(2) {
     font-size: 1.3rem;
     overflow-wrap: break-word;
 }
+.square.bottom-right h2 {
+    margin: 0;
+    padding-top: 4px; /* 👈 글씨를 살짝 아래로 내려서 로또 제목과 높이 일치 */
+    font-size: 1.05rem;
+    color: #333;
+    text-align: center;
+    width: 100%;    
+}
 
-/* 濡쒕삉 異붿꺼湲??꾩껜 ?덉씠?꾩썐 */
 .lotto-container {
     display: flex;
     flex-direction: column;
