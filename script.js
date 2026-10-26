@@ -49,12 +49,12 @@ class Calculator {
             case '-':
                 computation = prev - current;
                 break;
-            case '×':
+            case '횞':
                 computation = prev * current;
                 break;
-            case '÷':
+            case '첨':
                 if (current === 0) {
-                    alert('0으로 나눌 수 없습니다!');
+                    alert('0?쇰줈 ?섎닃 ???놁뒿?덈떎!');
                     return;
                 }
                 computation = prev / current;
@@ -111,7 +111,7 @@ document.querySelectorAll('button').forEach(button => {
             calculator.delete();
         } else if (button.innerText === '=' ) {
             calculator.compute();
-        } else if ('+-×÷'.includes(button.innerText)) {
+        } else if ('+-횞첨'.includes(button.innerText)) {
             calculator.chooseOperation(button.innerText);
         } else {
             calculator.appendNumber(button.innerText);
@@ -121,19 +121,19 @@ document.querySelectorAll('button').forEach(button => {
 }); 
 
 
-// Web Audio API를 활용한 효과음 생성기
+// Web Audio API瑜??쒖슜???④낵???앹꽦湲?
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. 가늘고 빠른 톤의 '짤깍짤깍' 번호판 회전 소리
+// 1. 媛?섍퀬 鍮좊Ⅸ ?ㅼ쓽 '吏ㅺ퉵吏ㅺ퉵' 踰덊샇???뚯쟾 ?뚮━
 function playFlipSound() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
     
-    osc.type = 'sine'; // 가늘고 부드러운 톤
-    osc.frequency.setValueAtTime(1400, audioCtx.currentTime); // 높은 주파수로 가늘게 설정
-    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015); // 아주 짧고 빠르게 떨어짐
+    osc.type = 'sine'; // 媛?섍퀬 遺?쒕윭????
+    osc.frequency.setValueAtTime(1400, audioCtx.currentTime); // ?믪? 二쇳뙆?섎줈 媛?섍쾶 ?ㅼ젙
+    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015); // ?꾩＜ 吏㏐퀬 鍮좊Ⅴ寃??⑥뼱吏?
     
     filter.type = 'highpass';
     filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
@@ -149,43 +149,17 @@ function playFlipSound() {
     osc.stop(audioCtx.currentTime + 0.015);
 }
 
-// Web Audio API 효과음 생성기
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-function playFlipSound() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    const filter = audioCtx.createBiquadFilter();
-    
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015);
-    
-    filter.type = 'highpass';
-    filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
-    
-    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015);
-    
-    osc.connect(filter);
-    filter.connect(gain);
-    gain.connect(audioCtx.destination);
-    
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.015);
-}
-
+// 2. 1984 LA ?щ┝???쒖긽? ?≫뙆??(?낆옣??釉뚮씪???ъ슫??
 function playOlympicsFanfare() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const fanfareNotes = [
-        { freq: 293.66, duration: 0.2 },
-        { freq: 392.00, duration: 0.2 },
-        { freq: 440.00, duration: 0.2 },
-        { freq: 493.88, duration: 0.2 },
-        { freq: 587.33, duration: 0.6 },
-        { freq: 493.88, duration: 0.2 },
-        { freq: 587.33, duration: 0.9 }
+        { freq: 293.66, duration: 0.2 }, // D4
+        { freq: 392.00, duration: 0.2 }, // G4
+        { freq: 440.00, duration: 0.2 }, // A4
+        { freq: 493.88, duration: 0.2 }, // B4
+        { freq: 587.33, duration: 0.6 }, // D5 
+        { freq: 493.88, duration: 0.2 }, // B4
+        { freq: 587.33, duration: 0.9 }  // D5 
     ];
     
     let time = audioCtx.currentTime;
@@ -194,7 +168,7 @@ function playOlympicsFanfare() {
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
         
-        osc.type = 'sawtooth';
+        osc.type = 'sawtooth'; 
         osc.frequency.setValueAtTime(note.freq, time);
         
         filter.type = 'lowpass';
@@ -215,108 +189,13 @@ function playOlympicsFanfare() {
     });
 }
 
-// 계산기 로직
-let currentOperand = '0';
-let previousOperand = '';
-let operation = undefined;
-
-function updateDisplay() {
-    const currEl = document.getElementById('current-operand');
-    const prevEl = document.getElementById('previous-operand');
-    if (currEl) currEl.innerText = currentOperand;
-    if (prevEl) prevEl.innerText = operation ? `${previousOperand} ${operation}` : '';
-}
-
-function clearCalculator() {
-    currentOperand = '0';
-    previousOperand = '';
-    operation = undefined;
-    updateDisplay();
-}
-
-function deleteNumber() {
-    if (currentOperand === '0') return;
-    if (currentOperand.length === 1) {
-        currentOperand = '0';
-    } else {
-        currentOperand = currentOperand.slice(0, -1);
-    }
-    updateDisplay();
-}
-
-function appendNumber(number) {
-    if (number === '.' && currentOperand.includes('.')) return;
-    if (currentOperand === '0' && number !== '.') {
-        currentOperand = number;
-    } else {
-        currentOperand += number;
-    }
-    updateDisplay();
-}
-
-function chooseOperation(op) {
-    if (currentOperand === '') return;
-    if (previousOperand !== '') {
-        compute();
-    }
-    operation = op;
-    previousOperand = currentOperand;
-    currentOperand = '';
-    updateDisplay();
-}
-
-function compute() {
-    let computation;
-    const prev = parseFloat(previousOperand);
-    const current = parseFloat(currentOperand);
-    if (isNaN(prev) || isNaN(current)) return;
-    switch (operation) {
-        case '+': computation = prev + current; break;
-        case '-': computation = prev - current; break;
-        case '×': computation = prev * current; break;
-        case '÷': computation = current === 0 ? 'Error' : prev / current; break;
-        default: return;
-    }
-    currentOperand = computation.toString();
-    operation = undefined;
-    previousOperand = '';
-    updateDisplay();
-}
-
-// 로또 추첨기 실행 보장 로직
+// 濡쒕삉 ?숈옉 濡쒖쭅
 document.addEventListener("DOMContentLoaded", () => {
-    // 온도 변환기 이벤트 연결
-    const cInput = document.getElementById("temp-celsius");
-    const fInput = document.getElementById("temp-fahrenheit");
-    const cToFBtn = document.getElementById("convert-c-to-f");
-    const fToCBtn = document.getElementById("convert-f-to-c");
-
-    if (cToFBtn && cInput && fInput) {
-        cToFBtn.addEventListener("click", () => {
-            const val = parseFloat(cInput.value);
-            if (!isNaN(val)) fInput.value = ((val * 9/5) + 32).toFixed(1);
-        });
-    }
-
-    if (fToCBtn && cInput && fInput) {
-        fToCBtn.addEventListener("click", () => {
-            const val = parseFloat(fInput.value);
-            if (!isNaN(val)) cInput.value = (((val - 32) * 5/9)).toFixed(1);
-        });
-    }
-
-    // 로또 버튼 및 공 요소 확인
     const lottoBtn = document.getElementById("lotto-btn");
     const ballEls = document.querySelectorAll("#lotto-balls .ball");
     
-    if (!lottoBtn) {
-        console.error("lotto-btn 요소를 찾을 수 없습니다!");
-        return;
-    }
-
     let isRolling = false;
     let rollIntervals = [];
-    let timeoutIds = [];
     let finalNumbers = [];
 
     function setBallColor(ballEl, num) {
@@ -339,38 +218,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return [...mainNumbers, bonusNumber];
     }
 
-    function stopRollingImmediately() {
-        rollIntervals.forEach(interval => clearInterval(interval));
-        timeoutIds.forEach(timeout => clearTimeout(timeout));
-        rollIntervals = [];
-        timeoutIds = [];
-
-        ballEls.forEach((ball, idx) => {
-            ball.classList.remove("rolling");
-            const num = finalNumbers[idx];
-            ball.innerText = num;
-            setBallColor(ball, num);
-        });
-
-        lottoBtn.innerText = "멈춤";
-        
-        setTimeout(() => {
-            isRolling = false;
-            lottoBtn.innerText = "AGAIN!";
-            playOlympicsFanfare();
-        }, 300);
-    }
-
     lottoBtn.addEventListener("click", () => {
-        if (isRolling) {
-            stopRollingImmediately();
-            return;
-        }
+        if (isRolling) return;
 
         isRolling = true;
-        lottoBtn.innerText = "추첨 중...";
+        lottoBtn.innerText = "異붿꺼 以?..";
+        lottoBtn.style.opacity = "0.7";
+
         finalNumbers = generateLottoNumbers();
 
+        // 1?④퀎: 5珥??숈븞 鍮좊Ⅴ寃??뚯쟾?섎ŉ 媛?먮떎? 吏ㅺ퉵 ?뚮━ ?ъ깮 (媛꾧꺽??45ms濡???鍮좊Ⅴ寃??ㅼ젙)
         ballEls.forEach((ball, idx) => {
             ball.classList.add("rolling");
             rollIntervals[idx] = setInterval(() => {
@@ -381,27 +238,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 45);
         });
 
-        const mainTimeout = setTimeout(() => {
+        // 2?④퀎: 5珥????쇱そ 怨듬???0.4珥?媛꾧꺽?쇰줈 李⑤??濡??뺤?
+        setTimeout(() => {
             ballEls.forEach((ball, idx) => {
-                const subTimeout = setTimeout(() => {
+                setTimeout(() => {
                     clearInterval(rollIntervals[idx]);
                     ball.classList.remove("rolling");
                     
                     const num = finalNumbers[idx];
                     ball.innerText = num;
                     setBallColor(ball, num);
+                    
                     playFlipSound(); 
 
+                    // 留덉?留?怨듦퉴吏 紐⑤몢 硫덉톬?????щ┝???≫뙆???곗＜
                     if (idx === ballEls.length - 1) {
                         isRolling = false;
                         lottoBtn.innerText = "AGAIN!";
+                        lottoBtn.style.opacity = "1";
                         setTimeout(playOlympicsFanfare, 250);
                     }
                 }, idx * 400); 
-                timeoutIds.push(subTimeout);
             });
-        }, 5000);
-        
-        timeoutIds.push(mainTimeout);
+        }, 5000); 
     });
 });
+
