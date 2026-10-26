@@ -355,23 +355,23 @@ button:nth-child(2) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* ?곷떒?쇰줈 諛붿쭩 遺숈뿬 ?꾩튂 議곗젙 */
-    padding-top: 4px; /* ?꾩そ ?щ갚 異뺤냼 */
+    justify-content: center; /* 세로 방향 중앙 정렬 */
     width: 100%;
     height: 100%;
     z-index: 2; 
     position: relative;
+    padding: 10px 4px;
+    box-sizing: border-box;
 }
 
 .lotto-container h2 {
     color: #fff;
-    font-size: 1.05rem;
-    margin: 0 0 4px 0; /* ?щ갚??以꾩뿬 ?꾩껜?곸쑝濡??꾨줈 諛곗튂 */
+    font-size: 1.1rem;
+    margin: 0 0 8px 0;
     padding: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    gap: 6px; /* ?붿궡, 湲?? ?먰솕 湲고샇 ?ъ씠 媛꾧꺽 */
+    text-align: center; /* 글자 자체도 중앙 정렬 */
+    width: 100%;
 }
 .lotto-container h2 .arrow,
 .lotto-container h2 .won-symbol {
