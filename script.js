@@ -49,12 +49,12 @@ class Calculator {
             case '-':
                 computation = prev - current;
                 break;
-            case '횞':
+            case '×':
                 computation = prev * current;
                 break;
-            case '첨':
+            case '÷':
                 if (current === 0) {
-                    alert('0?쇰줈 ?섎닃 ???놁뒿?덈떎!');
+                    alert('0으로 나눌 수 없습니다!');
                     return;
                 }
                 computation = prev / current;
@@ -111,7 +111,7 @@ document.querySelectorAll('button').forEach(button => {
             calculator.delete();
         } else if (button.innerText === '=' ) {
             calculator.compute();
-        } else if ('+-횞첨'.includes(button.innerText)) {
+        } else if ('+-×÷'.includes(button.innerText)) {
             calculator.chooseOperation(button.innerText);
         } else {
             calculator.appendNumber(button.innerText);
@@ -121,19 +121,19 @@ document.querySelectorAll('button').forEach(button => {
 }); 
 
 
-// Web Audio API瑜??쒖슜???④낵???앹꽦湲?
+// Web Audio API를 활용한 효과음 생성기
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. 媛?섍퀬 鍮좊Ⅸ ?ㅼ쓽 '吏ㅺ퉵吏ㅺ퉵' 踰덊샇???뚯쟾 ?뚮━
+// 1. 가늘고 빠른 톤의 '짤깍짤깍' 번호판 회전 소리
 function playFlipSound() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
     
-    osc.type = 'sine'; // 媛?섍퀬 遺?쒕윭????
-    osc.frequency.setValueAtTime(1400, audioCtx.currentTime); // ?믪? 二쇳뙆?섎줈 媛?섍쾶 ?ㅼ젙
-    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015); // ?꾩＜ 吏㏐퀬 鍮좊Ⅴ寃??⑥뼱吏?
+    osc.type = 'sine'; // 가늘고 부드러운 톤
+    osc.frequency.setValueAtTime(1400, audioCtx.currentTime); // 높은 주파수로 가늘게 설정
+    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015); // 아주 짧고 빠르게 떨어짐
     
     filter.type = 'highpass';
     filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
@@ -149,7 +149,7 @@ function playFlipSound() {
     osc.stop(audioCtx.currentTime + 0.015);
 }
 
-// 2. 1984 LA ?щ┝???쒖긽? ?≫뙆??(?낆옣??釉뚮씪???ъ슫??
+// 2. 1984 LA 올림픽 시상대 팡파레 (웅장한 브라스 사운드)
 function playOlympicsFanfare() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const fanfareNotes = [
@@ -189,7 +189,7 @@ function playOlympicsFanfare() {
     });
 }
 
-// 濡쒕삉 ?숈옉 濡쒖쭅
+// 로또 동작 로직
 document.addEventListener("DOMContentLoaded", () => {
     const lottoBtn = document.getElementById("lotto-btn");
     const ballEls = document.querySelectorAll("#lotto-balls .ball");
@@ -222,12 +222,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isRolling) return;
 
         isRolling = true;
-        lottoBtn.innerText = "異붿꺼 以?..";
+        lottoBtn.innerText = "추첨 중...";
         lottoBtn.style.opacity = "0.7";
 
         finalNumbers = generateLottoNumbers();
 
-        // 1?④퀎: 5珥??숈븞 鍮좊Ⅴ寃??뚯쟾?섎ŉ 媛?먮떎? 吏ㅺ퉵 ?뚮━ ?ъ깮 (媛꾧꺽??45ms濡???鍮좊Ⅴ寃??ㅼ젙)
+        // 1단계: 5초 동안 빠르게 회전하며 가느다란 짤깍 소리 재생 (간격을 45ms로 더 빠르게 설정)
         ballEls.forEach((ball, idx) => {
             ball.classList.add("rolling");
             rollIntervals[idx] = setInterval(() => {
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 45);
         });
 
-        // 2?④퀎: 5珥????쇱そ 怨듬???0.4珥?媛꾧꺽?쇰줈 李⑤??濡??뺤?
+        // 2단계: 5초 뒤 왼쪽 공부터 0.4초 간격으로 차례대로 정지
         setTimeout(() => {
             ballEls.forEach((ball, idx) => {
                 setTimeout(() => {
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     playFlipSound(); 
 
-                    // 留덉?留?怨듦퉴吏 紐⑤몢 硫덉톬?????щ┝???≫뙆???곗＜
+                    // 마지막 공까지 모두 멈췄을 때 올림픽 팡파레 연주
                     if (idx === ballEls.length - 1) {
                         isRolling = false;
                         lottoBtn.innerText = "AGAIN!";
@@ -264,3 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+       
+   
+
+
+
+    
