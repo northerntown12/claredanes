@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function startRolling() {
         isRolling = true;
-        lottoBtn.innerText = "STOP!";
+        lottoBtn.innerText = "중간 멈춤!";
         lottoBtn.style.opacity = "0.7";
 
         finalNumbers = generateLottoNumbers();
