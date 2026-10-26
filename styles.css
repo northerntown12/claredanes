@@ -428,12 +428,50 @@ button:nth-child(2) {
     filter: brightness(1.2);
 }
 
-/* 🌈 무지개 컬러 3D 공 입히기 (번호대별 색상 및 하얀색 글자) */
-.ball.num-1  { background: radial-gradient(circle at 35% 35%, #ff8a80 0%, #ff1744 50%, #b71c1c 100%); color: #fff; } /* 1~10: 레드 */
-.ball.num-11 { background: radial-gradient(circle at 35% 35%, #ffd180 0%, #ff9100 50%, #e65100 100%); color: #fff; } /* 11~20: 오렌지 */
-.ball.num-21 { background: radial-gradient(circle at 35% 35%, #ffff8d 0%, #ffea00 50%, #f57f17 100%); color: #fff; } /* 21~30: 옐로우 */
-.ball.num-31 { background: radial-gradient(circle at 35% 35%, #b9f6ca 0%, #00e676 50%, #1b5e20 100%); color: #fff; } /* 31~40: 그린 */
-.ball.num-41 { background: radial-gradient(circle at 35% 35%, #80d8ff 0%, #00b0ff 50%, #0d47a1 100%); color: #fff; } /* 41~45: 블루 */
+
+/* 🌈 무지개색 로또 공: 번호마다 7개씩, 보라는 3개 */
+
+/* 빨강: 1~7 */
+.ball.num-1 {
+    background: radial-gradient(circle at 35% 35%, #ff8a80 0%, #ff1744 50%, #b71c1c 100%);
+    color: #fff;
+}
+
+/* 주황: 8~14 */
+.ball.num-8 {
+    background: radial-gradient(circle at 35% 35%, #ffd180 0%, #ff9100 50%, #e65100 100%);
+    color: #fff;
+}
+
+/* 노랑: 15~21 */
+.ball.num-15 {
+    background: radial-gradient(circle at 35% 35%, #ffff8d 0%, #ffea00 50%, #f57f17 100%);
+    color: #333;
+}
+
+/* 초록: 22~28 */
+.ball.num-22 {
+    background: radial-gradient(circle at 35% 35%, #b9f6ca 0%, #00c853 50%, #1b5e20 100%);
+    color: #fff;
+}
+
+/* 파랑: 29~35 */
+.ball.num-29 {
+    background: radial-gradient(circle at 35% 35%, #80d8ff 0%, #0091ea 50%, #0d47a1 100%);
+    color: #fff;
+}
+
+/* 남색: 36~42 */
+.ball.num-36 {
+    background: radial-gradient(circle at 35% 35%, #b388ff 0%, #651fff 50%, #311b92 100%);
+    color: #fff;
+}
+
+/* 보라: 43~45 */
+.ball.num-43 {
+    background: radial-gradient(circle at 35% 35%, #ea80fc 0%, #d500f9 50%, #6a0080 100%);
+    color: #fff;
+}
 
 
 .slot-btn {
