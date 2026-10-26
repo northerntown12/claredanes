@@ -1,125 +1,145 @@
-class Calculator {
-    constructor(previousOperandElement, currentOperandElement) {
-        this.previousOperandElement = previousOperandElement;
-        this.currentOperandElement = currentOperandElement;
-        this.clear();
-    }
+const calculatorElement = document.querySelector('.calculator');
+const previousOperandElement = document.querySelector('.previous-operand');
+const currentOperandElement = document.querySelector('.current-operand');
 
-    clear() {
-        this.currentOperand = '0';
-        this.previousOperand = '';
-        this.operation = undefined;
-    }
+if (calculatorElement && previousOperandElement && currentOperandElement) {
 
-    delete() {
-        if (this.currentOperand === '0') return;
-        this.currentOperand = this.currentOperand.toString().slice(0, -1);
-        if (this.currentOperand === '') this.currentOperand = '0';
-    }
+    let currentOperand = '0';
+    let previousOperand = '';
+    let operation = undefined;
 
-    appendNumber(number) {
-        if (number === '.' && this.currentOperand.includes('.')) return;
-        if (this.currentOperand === '0' && number !== '.') {
-            this.currentOperand = number.toString();
+    function updateDisplay() {
+        currentOperandElement.textContent = formatNumber(currentOperand);
+
+        if (operation !== undefined) {
+            previousOperandElement.textContent =
+                `${formatNumber(previousOperand)} ${operation}`;
         } else {
-            this.currentOperand = this.currentOperand.toString() + number.toString();
+            previousOperandElement.textContent = '';
         }
     }
 
-    chooseOperation(operation) {
-        if (this.currentOperand === '0') return;
-        if (this.previousOperand !== '') {
-            this.compute();
-        }
-        this.operation = operation;
-        this.previousOperand = this.currentOperand;
-        this.currentOperand = '0';
+    function formatNumber(number) {
+        const parts = String(number).split('.');
+        const integerPart = Number(parts[0]);
+
+        const formattedInteger = Number.isNaN(integerPart)
+            ? '0'
+            : integerPart.toLocaleString('ko-KR');
+
+        return parts.length > 1
+            ? formattedInteger + '.' + parts[1]
+            : formattedInteger;
     }
 
-    compute() {
-        let computation;
-        const prev = parseFloat(this.previousOperand);
-        const current = parseFloat(this.currentOperand);
-        if (isNaN(prev) || isNaN(current)) return;
+    function clearCalculator() {
+        currentOperand = '0';
+        previousOperand = '';
+        operation = undefined;
+    }
 
-        switch (this.operation) {
+    function deleteNumber() {
+        currentOperand = currentOperand.slice(0, -1);
+
+        if (currentOperand === '' || currentOperand === '-') {
+            currentOperand = '0';
+        }
+    }
+
+    function appendNumber(number) {
+        if (number === '.' && currentOperand.includes('.')) {
+            return;
+        }
+
+        if (currentOperand === '0' && number !== '.') {
+            currentOperand = number;
+        } else {
+            currentOperand += number;
+        }
+    }
+
+    function chooseOperation(selectedOperation) {
+        if (operation !== undefined) {
+            calculate();
+
+            if (operation !== undefined) return;
+        }
+
+        previousOperand = currentOperand;
+        operation = selectedOperation;
+        currentOperand = '0';
+    }
+
+    function calculate() {
+        const prev = parseFloat(previousOperand);
+        const current = parseFloat(currentOperand);
+
+        if (Number.isNaN(prev) || Number.isNaN(current) ||
+            operation === undefined) {
+            return;
+        }
+
+        let result;
+
+        switch (operation) {
             case '+':
-                computation = prev + current;
+                result = prev + current;
                 break;
+
             case '-':
-                computation = prev - current;
+                result = prev - current;
                 break;
+
             case '×':
-                computation = prev * current;
+            case '*':
+                result = prev * current;
                 break;
+
             case '÷':
+            case '/':
                 if (current === 0) {
                     alert('0으로 나눌 수 없습니다!');
                     return;
                 }
-                computation = prev / current;
+                result = prev / current;
                 break;
+
             default:
                 return;
         }
 
-        this.currentOperand = Number(computation.toFixed(8)).toString();
-        this.operation = undefined;
-        this.previousOperand = '';
+        currentOperand = String(Number(result.toFixed(8)));
+        previousOperand = '';
+        operation = undefined;
     }
 
-    getDisplayNumber(number) {
-        const stringNumber = number.toString();
-        const integerDigits = parseFloat(stringNumber.split('.')[0]);
-        const decimalDigits = stringNumber.split('.')[1];
-        let integerDisplay;
-        
-        if (isNaN(integerDigits)) {
-            integerDisplay = '0';
-        } else {
-            integerDisplay = integerDigits.toLocaleString('ko-KR');
-        }
-        
-        if (decimalDigits != null) {
-            return `${integerDisplay}.${decimalDigits}`;
-        } else {
-            return integerDisplay;
-        }
-    }
+    // 계산기 내부 버튼만 처리해요.
+    calculatorElement.addEventListener('click', function(event) {
+        const button = event.target.closest('button');
 
-    updateDisplay() {
-        this.currentOperandElement.textContent = this.getDisplayNumber(this.currentOperand);
-        if (this.operation != null) {
-            this.previousOperandElement.textContent = 
-                `${this.getDisplayNumber(this.previousOperand)} ${this.operation}`;
-        } else {
-            this.previousOperandElement.textContent = '';
+        if (!button || !calculatorElement.contains(button)) {
+            return;
         }
-    }
-}
 
-const calculator = new Calculator(
-    document.querySelector('.previous-operand'),
-    document.querySelector('.current-operand')
-);
+        const value = button.textContent.trim();
 
-document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => {
-        if (button.innerText === 'AC') {
-            calculator.clear();
-        } else if (button.innerText === 'DEL') {
-            calculator.delete();
-        } else if (button.innerText === '=' ) {
-            calculator.compute();
-        } else if ('+-×÷'.includes(button.innerText)) {
-            calculator.chooseOperation(button.innerText);
-        } else {
-            calculator.appendNumber(button.innerText);
+        if (value === 'AC') {
+            clearCalculator();
+        } else if (value === 'DEL') {
+            deleteNumber();
+        } else if (value === '=') {
+            calculate();
+        } else if (['+', '-', '×', '*', '÷', '/'].includes(value)) {
+            chooseOperation(value);
+        } else if (/^\d+$/.test(value) || value === '.') {
+            appendNumber(value);
         }
-        calculator.updateDisplay();
+
+        updateDisplay();
     });
-}); 
 
+    updateDisplay();
+}
 
 // Web Audio API를 활용한 효과음 생성기
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
