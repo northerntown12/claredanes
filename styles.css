@@ -339,7 +339,7 @@ button:nth-child(2) {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 8px; /* 👈 로또와 동일한 상단 여백 부여 */
+    padding-top: 12px; 
 }
 
 .square.bottom-left h2{
