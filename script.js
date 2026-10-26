@@ -1,3 +1,62 @@
+
+/* ===== 계산기 버튼 소리 ===== */
+let calculatorAudioContext;
+
+function playCalculatorSound(type) {
+    try {
+        if (!calculatorAudioContext) {
+            calculatorAudioContext = new (
+                window.AudioContext || window.webkitAudioContext
+            )();
+        }
+
+        const ctx = calculatorAudioContext;
+
+        if (ctx.state === "suspended") {
+            ctx.resume();
+        }
+
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        const sounds = {
+            number:   { frequency: 1200, duration: 0.045, volume: 0.07 },
+            operator: { frequency: 720,  duration: 0.075, volume: 0.08 },
+            equals:   { frequency: 1500, duration: 0.12,  volume: 0.09 },
+            clear:    { frequency: 420,  duration: 0.10,  volume: 0.07 },
+            delete:   { frequency: 560,  duration: 0.06,  volume: 0.06 }
+        };
+
+        const sound = sounds[type] || sounds.number;
+        const now = ctx.currentTime;
+
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(sound.frequency, now);
+
+        // = 버튼은 음이 살짝 올라가도록 설정
+        if (type === "equals") {
+            oscillator.frequency.setValueAtTime(1900, now + 0.06);
+        }
+
+        gain.gain.setValueAtTime(sound.volume, now);
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            now + sound.duration
+        );
+
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+
+        oscillator.start(now);
+        oscillator.stop(now + sound.duration);
+
+    } catch (error) {
+        console.warn("계산기 소리를 재생하지 못했어요.", error);
+    }
+}
+
+
+
 const calculatorElement = document.querySelector('.calculator');
 const previousOperandElement = document.querySelector('.previous-operand');
 const currentOperandElement = document.querySelector('.current-operand');
@@ -114,29 +173,40 @@ if (calculatorElement && previousOperandElement && currentOperandElement) {
     }
 
     // 계산기 내부 버튼만 처리해요.
-    calculatorElement.addEventListener('click', function(event) {
-        const button = event.target.closest('button');
+    
+calculatorElement.addEventListener("click", function(event) {
+    const button = event.target.closest("button");
 
-        if (!button || !calculatorElement.contains(button)) {
-            return;
-        }
+    if (!button || !calculatorElement.contains(button)) {
+        return;
+    }
 
-        const value = button.textContent.trim();
+    const value = button.textContent.trim();
 
-        if (value === 'AC') {
-            clearCalculator();
-        } else if (value === 'DEL') {
-            deleteNumber();
-        } else if (value === '=') {
-            calculate();
-        } else if (['+', '-', '×', '*', '÷', '/'].includes(value)) {
-            chooseOperation(value);
-        } else if (/^\d+$/.test(value) || value === '.') {
-            appendNumber(value);
-        }
+    if (value === "AC") {
+        playCalculatorSound("clear");
+        clearCalculator();
 
-        updateDisplay();
-    });
+    } else if (value === "DEL") {
+        playCalculatorSound("delete");
+        deleteNumber();
+
+    } else if (value === "=") {
+        playCalculatorSound("equals");
+        calculate();
+
+    } else if (["+", "-", "×", "*", "÷", "/"].includes(value)) {
+        playCalculatorSound("operator");
+        chooseOperation(value);
+
+    } else if (/^\d+$/.test(value) || value === ".") {
+        playCalculatorSound("number");
+        appendNumber(value);
+    }
+
+    updateDisplay();
+});
+
 
     updateDisplay();
 }
