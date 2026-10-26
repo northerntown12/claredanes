@@ -16,8 +16,6 @@ body {
     flex-direction: column;
     align-items: center;
     padding-top: 142px;
-    @media (max-width:768px) {body { padding-top:20px
-                                   }}
 }
 
 .container {
@@ -25,6 +23,7 @@ body {
     flex-direction: column;
     align-items: center;
     flex: 1;
+    width: 100%;
 }
 
 .windows-logo-layout {
@@ -62,7 +61,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative; /* 배경 오버레이 기준점 설정 */
+    position: relative;
     overflow: hidden;
 }
 
@@ -76,25 +75,18 @@ body {
     background-image: url("casinogirl.jpg"); 
     background-size: cover;
     background-position: center;
-    opacity: 0.75; /* 그림이 더 선명하고 진하게 보이도록 상향 조정 */
+    opacity: 0.75;
     z-index: 1;    
 }
 
-/* 박스 안의 글자(로또 추첨기 제목 등)가 배경 위로 확실히 올라오도록 설정 */
-.lotto-container h2 {
-    color: #fff;
-    font-size: 1.1rem;
-    margin: 0 0 5px 0; /* 위아래 여백을 줄여서 위로 올림 */
-    padding: 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-}
-
-
-    
 .square.bottom-right {
     border: 2px solid #f44336;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
+/* 계산기 스타일 */
 .calculator {
     background-color: rgba(255, 255, 255, 0.95);    
     border-radius: 0;
@@ -108,7 +100,6 @@ body {
     width: 195px;
     height: 195px;
     position: relative;
-    
 }
 
 .display {
@@ -124,7 +115,7 @@ body {
     word-break: break-all;
     border: 1px solid #9e9e9e;
     min-height: 30px;
-  }
+}
 
 .previous-operand {
     color: rgba(0, 0, 0, 0.6);
@@ -174,6 +165,7 @@ button:nth-child(2) {
     background-color: #fce4ec;
 }
 
+/* 온도 변환기 스타일 */
 .temp-converter {
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 0;
@@ -218,11 +210,9 @@ button:nth-child(2) {
     text-align: center;
     box-sizing: border-box;
     outline: none; 
-
 }
 
 .equals {
-    margin: 0 0 auto;
     margin: 0 2px;
     font-size: 1rem;
     color: #666;
@@ -276,6 +266,7 @@ button:nth-child(2) {
     color: #666;
     margin: 0;
 } 
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -289,95 +280,27 @@ button:nth-child(2) {
   animation: blink 1s infinite;
 }
 
-
-/* 휴대폰 화면 설정 통합 */
-@media screen and (max-width: 600px) {
-    body {
-        padding-top: 20px;
-        background-image: none;
-    }
-
-    .windows-logo-layout {
-        width: 100%;
-        height: auto;
-        grid-template-columns: 1fr;
-    }
-
-    .square {
-        min-width: 0;
-        min-height: 220px;
-        height: auto; 
-    }
-
-    .calculator {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        height: auto !important; /* 계산기 높이 제한 해제 (이콜 버튼까지 100% 노출) */
-        overflow: visible;
-        margin: 0 auto;
-        padding-bottom: 0;
-    }
-
-    .calculator * {
-        box-sizing: border-box;
-        min-width: 0;
-    }
-
-    .footer {
-        width: 100%;
-    }
-}
-
-.square.bottom-left 
-   {display: flex;
-    justify-content: center;
-    align-items:  center;
-}
-.square.bottom-right {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-}
-
-.square.bottom-left h2,
-.square.bottom-right h2 {
-    margin: 0;
-    padding: 12px 8px;
-    width: 100%;
-    text-align: center;
-    font-size: 1.3rem;
-    overflow-wrap: break-word;
-}
-
-/* 로또 추첨기 전체 레이아웃 */
+/* 로또 추첨기 전체 레이아웃 및 디자인 */
 .lotto-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* 상단으로 바짝 붙여 위치 조정 */
-    padding-top: 4px; /* 위쪽 여백 축소 */
+    justify-content: center;
+    padding: 10px 4px;
     width: 100%;
     height: 100%;
     z-index: 2; 
     position: relative;
+    box-sizing: border-box;
 }
 
 .lotto-container h2 {
     color: #fff;
-    font-size: 1.05rem;
-    margin: 0 0 4px 0; /* 여백을 줄여 전체적으로 위로 배치 */
+    font-size: 1.1rem;
+    margin: 0 0 10px 0;
     padding: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-    display: flex;
-    align-items: center;
-    gap: 6px; /* 화살, 글자, 원화 기호 사이 간격 */
-}
-.lotto-container h2 .arrow,
-.lotto-container h2 .won-symbol {
-    color: #ffd700; /* 반짝이는 골드 컬러 */
-    font-size: 0.95rem;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    text-align: center;
 }
 
 /* 로또 공 배치 */
@@ -387,17 +310,19 @@ button:nth-child(2) {
     justify-content: center;
     gap: 4px;
     margin-bottom: 15px;
-    flex-wrap: wrap;
+    width: 100%;
+    flex-wrap: nowrap; /* 휴대폰에서도 줄바꿈 없이 한 줄로 유지 */
 }
 
 .plus-sign {
     color: #ffd700;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-shadow: 1px 1px 3px #000;
+    padding: 0 1px;
 }
 
-/* 3D 입체 로또 공 구형 효과 */
+/* 3D 입체 로또 공 구형 기본 효과 (하얀색 글자) */
 .ball {
     width: 34px;
     height: 34px;
@@ -409,24 +334,24 @@ button:nth-child(2) {
     font-size: 0.95rem;
     color: #fff;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    /* 3D 그라데이션 구체 그림자 효과 */
     background: radial-gradient(circle at 35% 35%, #ffffff 0%, #a0a0a0 40%, #404040 100%);
     box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.6), 2px 4px 6px rgba(0, 0, 0, 0.5);
     transition: transform 0.1s ease;
+    flex-shrink: 0; /* 폭 좁아질 때 공이 눌리지 않게 고정 */
 }
 
-/* 롤링 중 살짝 진동 효과 */
+/* 롤링 중 진동 효과 */
 .ball.rolling {
     transform: scale(1.08);
     filter: brightness(1.2);
 }
 
-/* 로또 번호대별 3D 공 컬러 입히기 */
-.ball.num-1 { background: radial-gradient(circle at 35% 35%, #fff677 0%, #fbc02d 50%, #9a7300 100%); color: #333; } /* 1~10 노랑 */
-.ball.num-11 { background: radial-gradient(circle at 35% 35%, #80d8ff 0%, #0288d1 50%, #003c8f 100%); } /* 11~20 파랑 */
-.ball.num-21 { background: radial-gradient(circle at 35% 35%, #ff8a80 0%, #d32f2f 50%, #7b0000 100%); } /* 21~30 빨강 */
-.ball.num-31 { background: radial-gradient(circle at 35% 35%, #cfd8dc 0%, #78909c 50%, #263238 100%); } /* 31~40 회색 */
-.ball.num-41 { background: radial-gradient(circle at 35% 35%, #b9f6ca 0%, #388e3c 50%, #003300 100%); } /* 41~45 초록 */
+/* 무지개 컬러 3D 공 입히기 */
+.ball.num-1 { background: radial-gradient(circle at 35% 35%, #ff8a80 0%, #ff1744 50%, #b71c1c 100%); color: #fff; }
+.ball.num-11 { background: radial-gradient(circle at 35% 35%, #ffd180 0%, #ff9100 50%, #e65100 100%); color: #fff; }
+.ball.num-21 { background: radial-gradient(circle at 35% 35%, #ffff8d 0%, #ffea00 50%, #f57f17 100%); color: #fff; }
+.ball.num-31 { background: radial-gradient(circle at 35% 35%, #b9f6ca 0%, #00e676 50%, #1b5e20 100%); color: #fff; }
+.ball.num-41 { background: radial-gradient(circle at 35% 35%, #80d8ff 0%, #00b0ff 50%, #0d47a1 100%); color: #fff; }
 
 /* 카지노 슬롯머신 스타일 입체 버튼 */
 .slot-btn {
@@ -451,4 +376,55 @@ button:nth-child(2) {
 .slot-btn:active {
     transform: translateY(2px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* 📱 휴대폰/모바일 반응형 최적화 설정 */
+@media screen and (max-width: 600px) {
+    body {
+        padding-top: 20px;
+        background-image: none;
+    }
+
+    .windows-logo-layout {
+        width: 100%;
+        max-width: 390px;
+        height: auto;
+        grid-template-columns: 1fr;
+    }
+
+    .square {
+        min-width: 0;
+        min-height: 220px;
+        height: auto; 
+    }
+
+    .calculator {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        height: auto !important;
+        overflow: visible;
+        margin: 0 auto;
+        padding-bottom: 0;
+    }
+
+    .calculator * {
+        box-sizing: border-box;
+        min-width: 0;
+    }
+
+    /* 휴대폰 좁은 화면에 맞춘 로또 공 축소 설정 */
+    .lotto-balls {
+        gap: 3px;
+    }
+
+    .ball {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    .footer {
+        width: 100%;
+    }
 }
