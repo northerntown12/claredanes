@@ -355,22 +355,22 @@ button:nth-child(2) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* 세로 방향 중앙 정렬 */
+    justify-content: flex-start; /* 위쪽을 기준으로 정렬하여 제목 위치 맞춤 */
     width: 100%;
     height: 100%;
     z-index: 2; 
     position: relative;
-    padding: 10px 4px;
+    padding-top: 6px; /* PC와 모바일 모두 상단 여백을 일정하게 고정 */
     box-sizing: border-box;
 }
 
 .lotto-container h2 {
     color: #fff;
-    font-size: 1.1rem;
-    margin: 0 0 8px 0;
+    font-size: 1.05rem;
+    margin: 0 0 6px 0; /* 제목 아래 간격 통일 */
     padding: 0;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
-    text-align: center; /* 글자 자체도 중앙 정렬 */
+    text-align: center;
     width: 100%;
 }
 .lotto-container h2 .arrow,
