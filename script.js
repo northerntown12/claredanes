@@ -412,42 +412,52 @@ document.addEventListener("DOMContentLoaded", () => {
         revealTimeouts.push(timeout);
     }
 
-    function revealNumbersSequentially(currentRunId) {
-        // 왼쪽 공부터 0.35초 간격으로 결과를 공개해요.
-        ballEls.forEach((ball, idx) => {
-            const timeout = setTimeout(() => {
-                if (runId !== currentRunId || !isRolling) {
-                    return;
-                }
+  
+function revealNumbersSequentially(currentRunId) {
+    // 각 공은 자신의 결과가 공개될 때까지 계속 회전해요.
+    ballEls.forEach((ball, idx) => {
+        const timeout = setTimeout(() => {
+            if (runId !== currentRunId || !isRolling) {
+                return;
+            }
 
-                ball.classList.remove("rolling");
+            // 해당 공의 회전만 멈춰요.
+            const interval = rollIntervals[idx];
+            if (interval !== undefined) {
+                clearInterval(interval);
+                rollIntervals[idx] = undefined;
+            }
 
-                const num = finalNumbers[idx];
-                ball.innerText = num;
-                setBallColor(ball, num);
+            ball.classList.remove("rolling");
 
-                // 모든 공이 공개된 뒤 엄지척과 팡파레를 실행해요.
-                if (idx === ballEls.length - 1) {
-                    lottoBtn.innerText = "👍";
+            // 해당 공의 최종 결과를 표시해요.
+            const num = finalNumbers[idx];
+            ball.innerText = num;
+            setBallColor(ball, num);
+
+            // 마지막 공까지 공개되면 축하 단계로 넘어가요.
+            if (idx === ballEls.length - 1) {
+                lottoBtn.innerText = "👍";
+                lottoBtn.style.opacity = "1";
+
+                playOlympicsFanfare(() => {
+                    if (runId !== currentRunId) {
+                        return;
+                    }
+
+                    isRolling = false;
+                    canStop = false;
+
+                    lottoBtn.innerText = "AGAIN!";
                     lottoBtn.style.opacity = "1";
+                });
+            }
+        }, idx * 350);
 
-                    playOlympicsFanfare(() => {
-                        if (runId !== currentRunId) {
-                            return;
-                        }
+        revealTimeouts.push(timeout);
+    });
+}
 
-                        isRolling = false;
-                        canStop = false;
-
-                        lottoBtn.innerText = "AGAIN!";
-                        lottoBtn.style.opacity = "1";
-                    });
-                }
-            }, idx * 350);
-
-            revealTimeouts.push(timeout);
-        });
-    }
 
     function startRolling() {
         runId++;
@@ -492,8 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
             stopTimeout = null;
             canStop = false;
 
-            clearRollIntervals();
-            revealNumbersSequentially(currentRunId);
+        revealNumbersSequentially(currentRunId);
         }, 4000);
     }
 
