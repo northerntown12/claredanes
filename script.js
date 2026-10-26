@@ -149,17 +149,43 @@ function playFlipSound() {
     osc.stop(audioCtx.currentTime + 0.015);
 }
 
-// 2. 1984 LA 올림픽 시상대 팡파레 (웅장한 브라스 사운드)
+// Web Audio API 효과음 생성기
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playFlipSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    const filter = audioCtx.createBiquadFilter();
+    
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015);
+    
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
+    
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015);
+    
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.015);
+}
+
 function playOlympicsFanfare() {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     const fanfareNotes = [
-        { freq: 293.66, duration: 0.2 }, // D4
-        { freq: 392.00, duration: 0.2 }, // G4
-        { freq: 440.00, duration: 0.2 }, // A4
-        { freq: 493.88, duration: 0.2 }, // B4
-        { freq: 587.33, duration: 0.6 }, // D5 
-        { freq: 493.88, duration: 0.2 }, // B4
-        { freq: 587.33, duration: 0.9 }  // D5 
+        { freq: 293.66, duration: 0.2 },
+        { freq: 392.00, duration: 0.2 },
+        { freq: 440.00, duration: 0.2 },
+        { freq: 493.88, duration: 0.2 },
+        { freq: 587.33, duration: 0.6 },
+        { freq: 493.88, duration: 0.2 },
+        { freq: 587.33, duration: 0.9 }
     ];
     
     let time = audioCtx.currentTime;
@@ -168,7 +194,7 @@ function playOlympicsFanfare() {
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
         
-        osc.type = 'sawtooth'; 
+        osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(note.freq, time);
         
         filter.type = 'lowpass';
@@ -189,13 +215,103 @@ function playOlympicsFanfare() {
     });
 }
 
-// 로또 동작 로직
+// 계산기 로직
+let currentOperand = '0';
+let previousOperand = '';
+let operation = undefined;
+
+function updateDisplay() {
+    const currEl = document.getElementById('current-operand');
+    const prevEl = document.getElementById('previous-operand');
+    if (currEl) currEl.innerText = currentOperand;
+    if (prevEl) prevEl.innerText = operation ? `${previousOperand} ${operation}` : '';
+}
+
+function clearCalculator() {
+    currentOperand = '0';
+    previousOperand = '';
+    operation = undefined;
+    updateDisplay();
+}
+
+function deleteNumber() {
+    if (currentOperand === '0') return;
+    if (currentOperand.length === 1) {
+        currentOperand = '0';
+    } else {
+        currentOperand = currentOperand.slice(0, -1);
+    }
+    updateDisplay();
+}
+
+function appendNumber(number) {
+    if (number === '.' && currentOperand.includes('.')) return;
+    if (currentOperand === '0' && number !== '.') {
+        currentOperand = number;
+    } else {
+        currentOperand += number;
+    }
+    updateDisplay();
+}
+
+function chooseOperation(op) {
+    if (currentOperand === '') return;
+    if (previousOperand !== '') {
+        compute();
+    }
+    operation = op;
+    previousOperand = currentOperand;
+    currentOperand = '';
+    updateDisplay();
+}
+
+function compute() {
+    let computation;
+    const prev = parseFloat(previousOperand);
+    const current = parseFloat(currentOperand);
+    if (isNaN(prev) || isNaN(current)) return;
+    switch (operation) {
+        case '+': computation = prev + current; break;
+        case '-': computation = prev - current; break;
+        case '×': computation = prev * current; break;
+        case '÷': computation = current === 0 ? 'Error' : prev / current; break;
+        default: return;
+    }
+    currentOperand = computation.toString();
+    operation = undefined;
+    previousOperand = '';
+    updateDisplay();
+}
+
+// 로또 추첨 핵심 로직
 document.addEventListener("DOMContentLoaded", () => {
+    // 온도 변환기 이벤트 연결
+    const cInput = document.getElementById("temp-celsius");
+    const fInput = document.getElementById("temp-fahrenheit");
+    const cToFBtn = document.getElementById("convert-c-to-f");
+    const fToCBtn = document.getElementById("convert-f-to-c");
+
+    if (cToFBtn && cInput && fInput) {
+        cToFBtn.addEventListener("click", () => {
+            const val = parseFloat(cInput.value);
+            if (!isNaN(val)) fInput.value = ((val * 9/5) + 32).toFixed(1);
+        });
+    }
+
+    if (fToCBtn && cInput && fInput) {
+        fToCBtn.addEventListener("click", () => {
+            const val = parseFloat(fInput.value);
+            if (!isNaN(val)) cInput.value = (((val - 32) * 5/9)).toFixed(1);
+        });
+    }
+
+    // 로또 추첨기 제어
     const lottoBtn = document.getElementById("lotto-btn");
     const ballEls = document.querySelectorAll("#lotto-balls .ball");
     
     let isRolling = false;
     let rollIntervals = [];
+    let timeoutIds = [];
     let finalNumbers = [];
 
     function setBallColor(ballEl, num) {
@@ -218,48 +334,72 @@ document.addEventListener("DOMContentLoaded", () => {
         return [...mainNumbers, bonusNumber];
     }
 
-    lottoBtn.addEventListener("click", () => {
-        if (isRolling) return;
+    // 추첨 중 즉시 정지 및 '멈춤' -> 'AGAIN!' 전환
+    function stopRollingImmediately() {
+        rollIntervals.forEach(interval => clearInterval(interval));
+        timeoutIds.forEach(timeout => clearTimeout(timeout));
+        rollIntervals = [];
+        timeoutIds = [];
 
-        isRolling = true;
-        lottoBtn.innerText = "추첨 중...";
-        lottoBtn.style.opacity = "0.7";
-
-        finalNumbers = generateLottoNumbers();
-
-        // 1단계: 5초 동안 빠르게 회전하며 가느다란 짤깍 소리 재생 (간격을 45ms로 더 빠르게 설정)
         ballEls.forEach((ball, idx) => {
-            ball.classList.add("rolling");
-            rollIntervals[idx] = setInterval(() => {
-                const randomNum = Math.floor(Math.random() * 45) + 1;
-                ball.innerText = randomNum;
-                setBallColor(ball, randomNum);
-                playFlipSound();
-            }, 45);
+            ball.classList.remove("rolling");
+            const num = finalNumbers[idx];
+            ball.innerText = num;
+            setBallColor(ball, num);
         });
 
-        // 2단계: 5초 뒤 왼쪽 공부터 0.4초 간격으로 차례대로 정지
+        lottoBtn.innerText = "멈춤";
+        
         setTimeout(() => {
-            ballEls.forEach((ball, idx) => {
-                setTimeout(() => {
-                    clearInterval(rollIntervals[idx]);
-                    ball.classList.remove("rolling");
-                    
-                    const num = finalNumbers[idx];
-                    ball.innerText = num;
-                    setBallColor(ball, num);
-                    
-                    playFlipSound(); 
+            isRolling = false;
+            lottoBtn.innerText = "AGAIN!";
+            playOlympicsFanfare();
+        }, 300);
+    }
 
-                    // 마지막 공까지 모두 멈췄을 때 올림픽 팡파레 연주
-                    if (idx === ballEls.length - 1) {
-                        isRolling = false;
-                        lottoBtn.innerText = "AGAIN!";
-                        lottoBtn.style.opacity = "1";
-                        setTimeout(playOlympicsFanfare, 250);
-                    }
-                }, idx * 400); 
+    if (lottoBtn) {
+        lottoBtn.addEventListener("click", () => {
+            if (isRolling) {
+                stopRollingImmediately();
+                return;
+            }
+
+            isRolling = true;
+            lottoBtn.innerText = "추첨 중...";
+            finalNumbers = generateLottoNumbers();
+
+            ballEls.forEach((ball, idx) => {
+                ball.classList.add("rolling");
+                rollIntervals[idx] = setInterval(() => {
+                    const randomNum = Math.floor(Math.random() * 45) + 1;
+                    ball.innerText = randomNum;
+                    setBallColor(ball, randomNum);
+                    playFlipSound();
+                }, 45);
             });
-        }, 5000); 
-    });
+
+            const mainTimeout = setTimeout(() => {
+                ballEls.forEach((ball, idx) => {
+                    const subTimeout = setTimeout(() => {
+                        clearInterval(rollIntervals[idx]);
+                        ball.classList.remove("rolling");
+                        
+                        const num = finalNumbers[idx];
+                        ball.innerText = num;
+                        setBallColor(ball, num);
+                        playFlipSound(); 
+
+                        if (idx === ballEls.length - 1) {
+                            isRolling = false;
+                            lottoBtn.innerText = "AGAIN!";
+                            setTimeout(playOlympicsFanfare, 250);
+                        }
+                    }, idx * 400); 
+                    timeoutIds.push(subTimeout);
+                });
+            }, 5000);
+            
+            timeoutIds.push(mainTimeout);
+        });
+    }
 });
