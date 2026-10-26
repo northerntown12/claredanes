@@ -221,21 +221,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let stopTimeout = null;
     let finalNumbers = [];
 
-    function setBallColor(ballEl, num) {
-        ballEl.className = "ball";
+    
+function setBallColor(ballEl, num) {
+    ballEl.className = "ball";
 
-        if (num >= 1 && num <= 10) {
-            ballEl.classList.add("num-1");
-        } else if (num <= 20) {
-            ballEl.classList.add("num-11");
-        } else if (num <= 30) {
-            ballEl.classList.add("num-21");
-        } else if (num <= 40) {
-            ballEl.classList.add("num-31");
-        } else if (num <= 45) {
-            ballEl.classList.add("num-41");
-        }
+    if (num <= 7) {
+        ballEl.classList.add("num-1");
+    } else if (num <= 14) {
+        ballEl.classList.add("num-8");
+    } else if (num <= 21) {
+        ballEl.classList.add("num-15");
+    } else if (num <= 28) {
+        ballEl.classList.add("num-22");
+    } else if (num <= 35) {
+        ballEl.classList.add("num-29");
+    } else if (num <= 42) {
+        ballEl.classList.add("num-36");
+    } else {
+        ballEl.classList.add("num-43");
     }
+}
+
 
     function generateLottoNumbers() {
         const numbers = Array.from({ length: 45 }, (_, i) => i + 1);
