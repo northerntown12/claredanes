@@ -209,84 +209,137 @@ function playOlympicsFanfare() {
     });
 }
 
-// 로또 동작 로직
+
+/* ===== 로또 추첨기 ===== */
+
 document.addEventListener("DOMContentLoaded", () => {
     const lottoBtn = document.getElementById("lotto-btn");
     const ballEls = document.querySelectorAll("#lotto-balls .ball");
-    
+
     let isRolling = false;
     let rollIntervals = [];
+    let stopTimeout = null;
     let finalNumbers = [];
 
     function setBallColor(ballEl, num) {
         ballEl.className = "ball";
-        if (num >= 1 && num <= 10) ballEl.classList.add("num-1");
-        else if (num <= 20) ballEl.classList.add("num-11");
-        else if (num <= 30) ballEl.classList.add("num-21");
-        else if (num <= 40) ballEl.classList.add("num-31");
-        else if (num <= 45) ballEl.classList.add("num-41");
+
+        if (num >= 1 && num <= 10) {
+            ballEl.classList.add("num-1");
+        } else if (num <= 20) {
+            ballEl.classList.add("num-11");
+        } else if (num <= 30) {
+            ballEl.classList.add("num-21");
+        } else if (num <= 40) {
+            ballEl.classList.add("num-31");
+        } else if (num <= 45) {
+            ballEl.classList.add("num-41");
+        }
     }
 
     function generateLottoNumbers() {
         const numbers = Array.from({ length: 45 }, (_, i) => i + 1);
+
         for (let i = numbers.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
         }
+
         const mainNumbers = numbers.slice(0, 6).sort((a, b) => a - b);
         const bonusNumber = numbers[6];
+
         return [...mainNumbers, bonusNumber];
     }
 
-    lottoBtn.addEventListener("click", () => {
-        if (isRolling) return;
+    function stopRolling() {
+        if (!isRolling) return;
 
+        isRolling = false;
+
+        // 자동 정지 타이머 취소
+        if (stopTimeout !== null) {
+            clearTimeout(stopTimeout);
+            stopTimeout = null;
+        }
+
+        // 모든 공의 회전을 즉시 중지
+        rollIntervals.forEach(interval => clearInterval(interval));
+        rollIntervals = [];
+
+        ballEls.forEach(ball => {
+            ball.classList.remove("rolling");
+        });
+
+        // 멈춘 순간 화면에 보이는 번호를 유지
+        lottoBtn.innerText = "STOP!";
+        lottoBtn.style.opacity = "1";
+
+        // STOP 표시 후 곧바로 AGAIN으로 변경
+        setTimeout(() => {
+            lottoBtn.innerText = "AGAIN!";
+        }, 150);
+
+        // 중간 정지에서는 팡파레를 재생하지 않아요.
+    }
+
+    function startRolling() {
         isRolling = true;
-        lottoBtn.innerText = "추첨 중...";
+        lottoBtn.innerText = "STOP!";
         lottoBtn.style.opacity = "0.7";
 
         finalNumbers = generateLottoNumbers();
 
-        // 1단계: 5초 동안 빠르게 회전하며 가느다란 짤깍 소리 재생 (간격을 45ms로 더 빠르게 설정)
         ballEls.forEach((ball, idx) => {
             ball.classList.add("rolling");
-            rollIntervals[idx] = setInterval(() => {
+
+            const interval = setInterval(() => {
                 const randomNum = Math.floor(Math.random() * 45) + 1;
+
                 ball.innerText = randomNum;
                 setBallColor(ball, randomNum);
-                playFlipSound();
+
+                if (typeof playFlipSound === "function") {
+                    playFlipSound();
+                }
             }, 45);
+
+            rollIntervals[idx] = interval;
         });
 
-        // 2단계: 5초 뒤 왼쪽 공부터 0.4초 간격으로 차례대로 정지
-        setTimeout(() => {
-            ballEls.forEach((ball, idx) => {
-                setTimeout(() => {
-                    clearInterval(rollIntervals[idx]);
-                    ball.classList.remove("rolling");
-                    
-                    const num = finalNumbers[idx];
-                    ball.innerText = num;
-                    setBallColor(ball, num);
-                    
-                    playFlipSound(); 
+        // 5초 동안 누르지 않으면 기존처럼 자동 추첨 완료
+        stopTimeout = setTimeout(() => {
+            if (!isRolling) return;
 
-                    // 마지막 공까지 모두 멈췄을 때 올림픽 팡파레 연주
-                    if (idx === ballEls.length - 1) {
-                        isRolling = false;
-                        lottoBtn.innerText = "AGAIN!";
-                        lottoBtn.style.opacity = "1";
-                        setTimeout(playOlympicsFanfare, 250);
-                    }
-                }, idx * 400); 
+            rollIntervals.forEach(interval => clearInterval(interval));
+            rollIntervals = [];
+            stopTimeout = null;
+
+            ballEls.forEach((ball, idx) => {
+                ball.classList.remove("rolling");
+
+                const num = finalNumbers[idx];
+                ball.innerText = num;
+                setBallColor(ball, num);
             });
-        }, 5000); 
+
+            isRolling = false;
+            lottoBtn.innerText = "AGAIN!";
+            lottoBtn.style.opacity = "1";
+
+            setTimeout(() => {
+                if (typeof playOlympicsFanfare === "function") {
+                    playOlympicsFanfare();
+                }
+            }, 250);
+        }, 5000);
+    }
+
+    lottoBtn.addEventListener("click", () => {
+        if (isRolling) {
+            stopRolling();
+        } else {
+            startRolling();
+        }
     });
 });
 
-       
-   
-
-
-
-    
