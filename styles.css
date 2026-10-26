@@ -405,38 +405,37 @@ button:nth-child(2) {
     text-shadow: 1px 1px 3px #000;
 }
 
-/* 3D ?낆껜 濡쒕삉 怨?援ы삎 ?④낵 */
+
 .ball {
-    width: 34px;
-    height: 34px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.95rem;
-    color: #fff;
+    font-size: 0.75rem;
+    color: #fff; /* 모든 숫자의 글자색을 하얀색으로 통일 */
     text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-    /* 3D 洹몃씪?곗씠??援ъ껜 洹몃┝???④낵 */
     background: radial-gradient(circle at 35% 35%, #ffffff 0%, #a0a0a0 40%, #404040 100%);
-    box-shadow: inset -3px -3px 6px rgba(0, 0, 0, 0.6), 2px 4px 6px rgba(0, 0, 0, 0.5);
+    box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.6), 1px 2px 4px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
     transition: transform 0.1s ease;
 }
 
-/* 濡ㅻ쭅 以??댁쭩 吏꾨룞 ?④낵 */
 .ball.rolling {
     transform: scale(1.08);
     filter: brightness(1.2);
 }
 
-/* 濡쒕삉 踰덊샇?蹂?3D 怨?而щ윭 ?낇엳湲?*/
-.ball.num-1 { background: radial-gradient(circle at 35% 35%, #fff677 0%, #fbc02d 50%, #9a7300 100%); color: #333; } /* 1~10 ?몃옉 */
-.ball.num-11 { background: radial-gradient(circle at 35% 35%, #80d8ff 0%, #0288d1 50%, #003c8f 100%); } /* 11~20 ?뚮옉 */
-.ball.num-21 { background: radial-gradient(circle at 35% 35%, #ff8a80 0%, #d32f2f 50%, #7b0000 100%); } /* 21~30 鍮④컯 */
-.ball.num-31 { background: radial-gradient(circle at 35% 35%, #cfd8dc 0%, #78909c 50%, #263238 100%); } /* 31~40 ?뚯깋 */
-.ball.num-41 { background: radial-gradient(circle at 35% 35%, #b9f6ca 0%, #388e3c 50%, #003300 100%); } /* 41~45 珥덈줉 */
+/* 🌈 무지개 컬러 3D 공 입히기 (번호대별 색상 및 하얀색 글자) */
+.ball.num-1  { background: radial-gradient(circle at 35% 35%, #ff8a80 0%, #ff1744 50%, #b71c1c 100%); color: #fff; } /* 1~10: 레드 */
+.ball.num-11 { background: radial-gradient(circle at 35% 35%, #ffd180 0%, #ff9100 50%, #e65100 100%); color: #fff; } /* 11~20: 오렌지 */
+.ball.num-21 { background: radial-gradient(circle at 35% 35%, #ffff8d 0%, #ffea00 50%, #f57f17 100%); color: #fff; } /* 21~30: 옐로우 */
+.ball.num-31 { background: radial-gradient(circle at 35% 35%, #b9f6ca 0%, #00e676 50%, #1b5e20 100%); color: #fff; } /* 31~40: 그린 */
+.ball.num-41 { background: radial-gradient(circle at 35% 35%, #80d8ff 0%, #00b0ff 50%, #0d47a1 100%); color: #fff; } /* 41~45: 블루 */
 
-/* 移댁????щ’癒몄떊 ?ㅽ????낆껜 踰꾪듉 */
+
 .slot-btn {
     background: linear-gradient(180deg, #ffd700 0%, #ff8c00 100%);
     border: 2px solid #fff;
