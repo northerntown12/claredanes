@@ -437,8 +437,12 @@ function revealNumbersSequentially(currentRunId) {
 
             // 마지막 공까지 공개되면 축하 단계로 넘어가요.
             if (idx === ballEls.length - 1) {
-                lottoBtn.innerText = "👍";
-                lottoBtn.style.opacity = "1";
+               lottoBtn.innerText = "👍";
+               lottoBtn.style.opacity = "1";
+               lottoBtn.style.backgroundColor = "#0057D9";
+               lottoBtn.style.color = "#FFFFFF";
+               lottoBtn.style.fontSize = "28px";
+               lottoBtn.style.fontWeight = "bold";
 
                 playOlympicsFanfare(() => {
                     if (runId !== currentRunId) {
@@ -450,6 +454,8 @@ function revealNumbersSequentially(currentRunId) {
 
                     lottoBtn.innerText = "AGAIN!";
                     lottoBtn.style.opacity = "1";
+                    lottoBtn.style.backgroundColor = "";
+                    lottoBtn.style.fontSize = "";
                 });
             }
         }, idx * 350);
