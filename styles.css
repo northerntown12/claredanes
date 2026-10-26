@@ -352,8 +352,8 @@ button:nth-child(2) {
 }
 .square.bottom-right h2 {
     margin: 0;
-    padding-top: 4px; /* 👈 글씨를 살짝 아래로 내려서 로또 제목과 높이 일치 */
-    font-size: 1.05rem;
+    padding-top: 12px 8px; /* 👈 글씨를 살짝 아래로 내려서 로또 제목과 높이 일치 */
+    font-size: 1.3rem;
     color: #333;
     text-align: center;
     width: 100%;    
