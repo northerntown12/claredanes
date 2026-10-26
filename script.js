@@ -453,6 +453,7 @@ function revealNumbersSequentially(currentRunId) {
                     canStop = false;
 
                     lottoBtn.innerText = "AGAIN!";
+                    lottoBtn.style.color = "#000000";
                     lottoBtn.style.opacity = "1";
                     lottoBtn.style.backgroundColor = "";
                     lottoBtn.style.fontSize = "";
@@ -478,6 +479,7 @@ function revealNumbersSequentially(currentRunId) {
         clearRollIntervals();
 
         lottoBtn.innerText = "Wait!";
+        lottoBtn.style.color = "#000000";
         lottoBtn.style.opacity = "0.7";
 
         ballEls.forEach((ball, idx) => {
