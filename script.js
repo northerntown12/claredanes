@@ -283,7 +283,7 @@ function compute() {
     updateDisplay();
 }
 
-// 로또 추첨 핵심 로직
+// 로또 추첨기 실행 보장 로직
 document.addEventListener("DOMContentLoaded", () => {
     // 온도 변환기 이벤트 연결
     const cInput = document.getElementById("temp-celsius");
@@ -305,10 +305,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 로또 추첨기 제어
+    // 로또 버튼 및 공 요소 확인
     const lottoBtn = document.getElementById("lotto-btn");
     const ballEls = document.querySelectorAll("#lotto-balls .ball");
     
+    if (!lottoBtn) {
+        console.error("lotto-btn 요소를 찾을 수 없습니다!");
+        return;
+    }
+
     let isRolling = false;
     let rollIntervals = [];
     let timeoutIds = [];
@@ -334,7 +339,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return [...mainNumbers, bonusNumber];
     }
 
-    // 추첨 중 즉시 정지 및 '멈춤' -> 'AGAIN!' 전환
     function stopRollingImmediately() {
         rollIntervals.forEach(interval => clearInterval(interval));
         timeoutIds.forEach(timeout => clearTimeout(timeout));
@@ -357,49 +361,47 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 300);
     }
 
-    if (lottoBtn) {
-        lottoBtn.addEventListener("click", () => {
-            if (isRolling) {
-                stopRollingImmediately();
-                return;
-            }
+    lottoBtn.addEventListener("click", () => {
+        if (isRolling) {
+            stopRollingImmediately();
+            return;
+        }
 
-            isRolling = true;
-            lottoBtn.innerText = "추첨 중...";
-            finalNumbers = generateLottoNumbers();
+        isRolling = true;
+        lottoBtn.innerText = "추첨 중...";
+        finalNumbers = generateLottoNumbers();
 
-            ballEls.forEach((ball, idx) => {
-                ball.classList.add("rolling");
-                rollIntervals[idx] = setInterval(() => {
-                    const randomNum = Math.floor(Math.random() * 45) + 1;
-                    ball.innerText = randomNum;
-                    setBallColor(ball, randomNum);
-                    playFlipSound();
-                }, 45);
-            });
-
-            const mainTimeout = setTimeout(() => {
-                ballEls.forEach((ball, idx) => {
-                    const subTimeout = setTimeout(() => {
-                        clearInterval(rollIntervals[idx]);
-                        ball.classList.remove("rolling");
-                        
-                        const num = finalNumbers[idx];
-                        ball.innerText = num;
-                        setBallColor(ball, num);
-                        playFlipSound(); 
-
-                        if (idx === ballEls.length - 1) {
-                            isRolling = false;
-                            lottoBtn.innerText = "AGAIN!";
-                            setTimeout(playOlympicsFanfare, 250);
-                        }
-                    }, idx * 400); 
-                    timeoutIds.push(subTimeout);
-                });
-            }, 5000);
-            
-            timeoutIds.push(mainTimeout);
+        ballEls.forEach((ball, idx) => {
+            ball.classList.add("rolling");
+            rollIntervals[idx] = setInterval(() => {
+                const randomNum = Math.floor(Math.random() * 45) + 1;
+                ball.innerText = randomNum;
+                setBallColor(ball, randomNum);
+                playFlipSound();
+            }, 45);
         });
-    }
+
+        const mainTimeout = setTimeout(() => {
+            ballEls.forEach((ball, idx) => {
+                const subTimeout = setTimeout(() => {
+                    clearInterval(rollIntervals[idx]);
+                    ball.classList.remove("rolling");
+                    
+                    const num = finalNumbers[idx];
+                    ball.innerText = num;
+                    setBallColor(ball, num);
+                    playFlipSound(); 
+
+                    if (idx === ballEls.length - 1) {
+                        isRolling = false;
+                        lottoBtn.innerText = "AGAIN!";
+                        setTimeout(playOlympicsFanfare, 250);
+                    }
+                }, idx * 400); 
+                timeoutIds.push(subTimeout);
+            });
+        }, 5000);
+        
+        timeoutIds.push(mainTimeout);
+    });
 });
