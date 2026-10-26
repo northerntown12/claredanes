@@ -339,7 +339,7 @@ button:nth-child(2) {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 12px; 
+    padding-top: 14px; 
 }
 
 .square.bottom-left h2{
