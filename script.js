@@ -33,7 +33,6 @@ function playCalculatorSound(type) {
         oscillator.type = "sine";
         oscillator.frequency.setValueAtTime(sound.frequency, now);
 
-        // = 버튼은 음이 살짝 올라가도록 설정
         if (type === "equals") {
             oscillator.frequency.setValueAtTime(1900, now + 0.06);
         }
@@ -56,7 +55,7 @@ function playCalculatorSound(type) {
 }
 
 
-
+/* ===== 계산기 ===== */
 const calculatorElement = document.querySelector('.calculator');
 const previousOperandElement = document.querySelector('.previous-operand');
 const currentOperandElement = document.querySelector('.current-operand');
@@ -133,8 +132,11 @@ if (calculatorElement && previousOperandElement && currentOperandElement) {
         const prev = parseFloat(previousOperand);
         const current = parseFloat(currentOperand);
 
-        if (Number.isNaN(prev) || Number.isNaN(current) ||
-            operation === undefined) {
+        if (
+            Number.isNaN(prev) ||
+            Number.isNaN(current) ||
+            operation === undefined
+        ) {
             return;
         }
 
@@ -160,6 +162,7 @@ if (calculatorElement && previousOperandElement && currentOperandElement) {
                     alert('0으로 나눌 수 없습니다!');
                     return;
                 }
+
                 result = prev / current;
                 break;
 
@@ -172,250 +175,339 @@ if (calculatorElement && previousOperandElement && currentOperandElement) {
         operation = undefined;
     }
 
-    // 계산기 내부 버튼만 처리해요.
-    
-calculatorElement.addEventListener("click", function(event) {
-    const button = event.target.closest("button");
+    calculatorElement.addEventListener("click", function(event) {
+        const button = event.target.closest("button");
 
-    if (!button || !calculatorElement.contains(button)) {
-        return;
-    }
+        if (!button || !calculatorElement.contains(button)) {
+            return;
+        }
 
-    const value = button.textContent.trim();
+        const value = button.textContent.trim();
 
-    if (value === "AC") {
-        playCalculatorSound("clear");
-        clearCalculator();
+        if (value === "AC") {
+            playCalculatorSound("clear");
+            clearCalculator();
 
-    } else if (value === "DEL") {
-        playCalculatorSound("delete");
-        deleteNumber();
+        } else if (value === "DEL") {
+            playCalculatorSound("delete");
+            deleteNumber();
 
-    } else if (value === "=") {
-        playCalculatorSound("equals");
-        calculate();
+        } else if (value === "=") {
+            playCalculatorSound("equals");
+            calculate();
 
-    } else if (["+", "-", "×", "*", "÷", "/"].includes(value)) {
-        playCalculatorSound("operator");
-        chooseOperation(value);
+        } else if (["+", "-", "×", "*", "÷", "/"].includes(value)) {
+            playCalculatorSound("operator");
+            chooseOperation(value);
 
-    } else if (/^\d+$/.test(value) || value === ".") {
-        playCalculatorSound("number");
-        appendNumber(value);
-    }
+        } else if (/^\d+$/.test(value) || value === ".") {
+            playCalculatorSound("number");
+            appendNumber(value);
+        }
 
-    updateDisplay();
-});
-
+        updateDisplay();
+    });
 
     updateDisplay();
 }
 
-// Web Audio API를 활용한 효과음 생성기
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-// 1. 가늘고 빠른 톤의 '짤깍짤깍' 번호판 회전 소리
+/* ===== 로또 효과음 ===== */
+const audioCtx = new (
+    window.AudioContext || window.webkitAudioContext
+)();
+
 function playFlipSound() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     const filter = audioCtx.createBiquadFilter();
-    
-    osc.type = 'sine'; // 가늘고 부드러운 톤
-    osc.frequency.setValueAtTime(1400, audioCtx.currentTime); // 높은 주파수로 가늘게 설정
-    osc.frequency.exponentialRampToValueAtTime(500, audioCtx.currentTime + 0.015); // 아주 짧고 빠르게 떨어짐
-    
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1400, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(
+        500,
+        audioCtx.currentTime + 0.015
+    );
+
     filter.type = 'highpass';
     filter.frequency.setValueAtTime(1000, audioCtx.currentTime);
-    
+
     gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.015);
-    
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioCtx.currentTime + 0.015
+    );
+
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(audioCtx.destination);
-    
+
     osc.start();
     osc.stop(audioCtx.currentTime + 0.015);
 }
 
-// 2. 1984 LA 올림픽 시상대 팡파레 (웅장한 브라스 사운드)
-function playOlympicsFanfare() {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+/* ===== 팡파레 ===== */
+// 팡파레의 마지막 음이 끝나면 onComplete를 실행해요.
+function playOlympicsFanfare(onComplete) {
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
     const fanfareNotes = [
-        { freq: 293.66, duration: 0.2 }, // D4
-        { freq: 392.00, duration: 0.2 }, // G4
-        { freq: 440.00, duration: 0.2 }, // A4
-        { freq: 493.88, duration: 0.2 }, // B4
-        { freq: 587.33, duration: 0.6 }, // D5 
-        { freq: 493.88, duration: 0.2 }, // B4
-        { freq: 587.33, duration: 0.9 }  // D5 
+        { freq: 293.66, duration: 0.2 },
+        { freq: 392.00, duration: 0.2 },
+        { freq: 440.00, duration: 0.2 },
+        { freq: 493.88, duration: 0.2 },
+        { freq: 587.33, duration: 0.6 },
+        { freq: 493.88, duration: 0.2 },
+        { freq: 587.33, duration: 0.9 }
     ];
-    
+
     let time = audioCtx.currentTime;
-    fanfareNotes.forEach(note => {
+
+    fanfareNotes.forEach((note, index) => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         const filter = audioCtx.createBiquadFilter();
-        
-        osc.type = 'sawtooth'; 
+
+        osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(note.freq, time);
-        
+
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(1600, time);
-        
+
         gain.gain.setValueAtTime(0.01, time);
         gain.gain.linearRampToValueAtTime(0.22, time + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + note.duration);
-        
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            time + note.duration
+        );
+
         osc.connect(filter);
         filter.connect(gain);
         gain.connect(audioCtx.destination);
-        
+
+        // 마지막 음이 끝나는 순간 완료 처리를 실행해요.
+        if (
+            index === fanfareNotes.length - 1 &&
+            typeof onComplete === 'function'
+        ) {
+            osc.addEventListener('ended', onComplete, { once: true });
+        }
+
         osc.start(time);
         osc.stop(time + note.duration);
-        
+
         time += note.duration + 0.04;
     });
 }
 
 
 /* ===== 로또 추첨기 ===== */
-
 document.addEventListener("DOMContentLoaded", () => {
     const lottoBtn = document.getElementById("lotto-btn");
-    const ballEls = document.querySelectorAll("#lotto-balls .ball");
+    const ballEls = Array.from(
+        document.querySelectorAll("#lotto-balls .ball")
+    );
+
+    if (!lottoBtn || ballEls.length === 0) {
+        return;
+    }
 
     let isRolling = false;
+    let canStop = false;
     let rollIntervals = [];
     let stopTimeout = null;
+    let revealTimeouts = [];
     let finalNumbers = [];
+    let runId = 0;
 
-    
-function setBallColor(ballEl, num) {
-    ballEl.className = "ball";
-
-    if (num <= 7) {
-        ballEl.classList.add("num-1");
-    } else if (num <= 14) {
-        ballEl.classList.add("num-8");
-    } else if (num <= 21) {
-        ballEl.classList.add("num-15");
-    } else if (num <= 28) {
-        ballEl.classList.add("num-22");
-    } else if (num <= 35) {
-        ballEl.classList.add("num-29");
-    } else if (num <= 42) {
-        ballEl.classList.add("num-36");
-    } else {
-        ballEl.classList.add("num-43");
+    function clearRollIntervals() {
+        rollIntervals.forEach(interval => clearInterval(interval));
+        rollIntervals = [];
     }
-}
 
+    function clearPendingTimers() {
+        if (stopTimeout !== null) {
+            clearTimeout(stopTimeout);
+            stopTimeout = null;
+        }
+
+        revealTimeouts.forEach(timeout => clearTimeout(timeout));
+        revealTimeouts = [];
+    }
+
+    function setBallColor(ballEl, num) {
+        ballEl.className = "ball";
+
+        if (num <= 7) {
+            ballEl.classList.add("num-1");
+        } else if (num <= 14) {
+            ballEl.classList.add("num-8");
+        } else if (num <= 21) {
+            ballEl.classList.add("num-15");
+        } else if (num <= 28) {
+            ballEl.classList.add("num-22");
+        } else if (num <= 35) {
+            ballEl.classList.add("num-29");
+        } else if (num <= 42) {
+            ballEl.classList.add("num-36");
+        } else {
+            ballEl.classList.add("num-43");
+        }
+    }
 
     function generateLottoNumbers() {
-        const numbers = Array.from({ length: 45 }, (_, i) => i + 1);
+        const numbers = Array.from(
+            { length: 45 },
+            (_, i) => i + 1
+        );
 
         for (let i = numbers.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
         }
 
-        const mainNumbers = numbers.slice(0, 6).sort((a, b) => a - b);
+        const mainNumbers = numbers
+            .slice(0, 6)
+            .sort((a, b) => a - b);
+
         const bonusNumber = numbers[6];
 
         return [...mainNumbers, bonusNumber];
     }
 
     function stopRolling() {
-        if (!isRolling) return;
-
-        isRolling = false;
-
-        // 자동 정지 타이머 취소
-        if (stopTimeout !== null) {
-            clearTimeout(stopTimeout);
-            stopTimeout = null;
+        if (!isRolling || !canStop) {
+            return;
         }
 
-        // 모든 공의 회전을 즉시 중지
-        rollIntervals.forEach(interval => clearInterval(interval));
-        rollIntervals = [];
+        isRolling = false;
+        canStop = false;
+        runId++;
+
+        clearPendingTimers();
+        clearRollIntervals();
 
         ballEls.forEach(ball => {
             ball.classList.remove("rolling");
         });
 
-        // 멈춘 순간 화면에 보이는 번호를 유지
         lottoBtn.innerText = "STOP!";
         lottoBtn.style.opacity = "1";
 
-        // STOP 표시 후 곧바로 AGAIN으로 변경
-        setTimeout(() => {
-            lottoBtn.innerText = "AGAIN!";
+        const stoppedRunId = runId;
+
+        const timeout = setTimeout(() => {
+            if (runId === stoppedRunId && !isRolling) {
+                lottoBtn.innerText = "AGAIN!";
+            }
         }, 150);
 
-        // 중간 정지에서는 팡파레를 재생하지 않아요.
+        revealTimeouts.push(timeout);
     }
 
-    function startRolling() {
-        isRolling = true;
-        lottoBtn.innerText = "Wait!";
-        lottoBtn.style.opacity = "0.7";
-
-        finalNumbers = generateLottoNumbers();
-
+    function revealNumbersSequentially(currentRunId) {
+        // 왼쪽 공부터 0.35초 간격으로 결과를 공개해요.
         ballEls.forEach((ball, idx) => {
-            ball.classList.add("rolling");
-
-            const interval = setInterval(() => {
-                const randomNum = Math.floor(Math.random() * 45) + 1;
-
-                ball.innerText = randomNum;
-                setBallColor(ball, randomNum);
-
-                if (typeof playFlipSound === "function") {
-                    playFlipSound();
+            const timeout = setTimeout(() => {
+                if (runId !== currentRunId || !isRolling) {
+                    return;
                 }
-            }, 45);
 
-            rollIntervals[idx] = interval;
-        });
-
-        // 5초 동안 누르지 않으면 기존처럼 자동 추첨 완료
-        stopTimeout = setTimeout(() => {
-            if (!isRolling) return;
-
-            rollIntervals.forEach(interval => clearInterval(interval));
-            rollIntervals = [];
-            stopTimeout = null;
-
-            ballEls.forEach((ball, idx) => {
                 ball.classList.remove("rolling");
 
                 const num = finalNumbers[idx];
                 ball.innerText = num;
                 setBallColor(ball, num);
-            });
 
-            isRolling = false;
-            lottoBtn.innerText = "AGAIN!";
-            lottoBtn.style.opacity = "1";
+                // 모든 공이 공개된 뒤 엄지척과 팡파레를 실행해요.
+                if (idx === ballEls.length - 1) {
+                    lottoBtn.innerText = "👍";
+                    lottoBtn.style.opacity = "1";
 
-            setTimeout(() => {
-                if (typeof playOlympicsFanfare === "function") {
-                    playOlympicsFanfare();
+                    playOlympicsFanfare(() => {
+                        if (runId !== currentRunId) {
+                            return;
+                        }
+
+                        isRolling = false;
+                        canStop = false;
+
+                        lottoBtn.innerText = "AGAIN!";
+                        lottoBtn.style.opacity = "1";
+                    });
                 }
-            }, 250);
-        }, 5000);
+            }, idx * 350);
+
+            revealTimeouts.push(timeout);
+        });
+    }
+
+    function startRolling() {
+        runId++;
+        const currentRunId = runId;
+
+        isRolling = true;
+        canStop = true;
+
+        finalNumbers = generateLottoNumbers();
+
+        clearPendingTimers();
+        clearRollIntervals();
+
+        lottoBtn.innerText = "Wait!";
+        lottoBtn.style.opacity = "0.7";
+
+        ballEls.forEach((ball, idx) => {
+            ball.classList.add("rolling");
+
+            const interval = setInterval(() => {
+                if (runId !== currentRunId || !isRolling) {
+                    return;
+                }
+
+                const randomNum = Math.floor(Math.random() * 45) + 1;
+
+                ball.innerText = randomNum;
+                setBallColor(ball, randomNum);
+
+                playFlipSound();
+            }, 45);
+
+            rollIntervals[idx] = interval;
+        });
+
+        // 4초 회전한 뒤 번호를 왼쪽부터 차례대로 공개해요.
+        stopTimeout = setTimeout(() => {
+            if (runId !== currentRunId || !isRolling) {
+                return;
+            }
+
+            stopTimeout = null;
+            canStop = false;
+
+            clearRollIntervals();
+            revealNumbersSequentially(currentRunId);
+        }, 4000);
     }
 
     lottoBtn.addEventListener("click", () => {
         if (isRolling) {
-            stopRolling();
-        } else {
-            startRolling();
+            // 회전 중에는 STOP!을 허용하고,
+            // 결과 공개 중에는 중복 클릭을 막아요.
+            if (canStop) {
+                stopRolling();
+            }
+
+            return;
         }
+
+        startRolling();
     });
 });
-
