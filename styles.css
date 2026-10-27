@@ -536,6 +536,7 @@ button:nth-child(2) {
     border-radius: 8px;
     background: transparent;
     color: black;
+    font-weight: 700;
 }
 
 .calculator button::before {
