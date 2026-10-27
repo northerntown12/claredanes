@@ -522,6 +522,7 @@ button:nth-child(2) {
     border-radius: 8px;
     background: transparent;
     color: #000000;
+    opacity: 1;
     font-weight: 900;
     text-shadow: none;
     -webkit-text-stroke: 0.4px #000000;
