@@ -521,3 +521,10 @@ button:nth-child(2) {
     font-weight: 700;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
 }
+
+
+/* 계산 결과값만 빨간색 */
+#calc-display {
+    color: red;
+    font-weight: 700;
+}
