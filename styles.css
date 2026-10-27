@@ -522,9 +522,10 @@ button:nth-child(2) {
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
 }
 
-
-/* 계산 결과값만 빨간색 */
-#calc-display {
+/* 계산기 결과값만 빨간색 */
+.current-operand {
     color: red;
+    font-size: 1rem;
     font-weight: 700;
 }
+
