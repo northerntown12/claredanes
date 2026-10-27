@@ -515,15 +515,16 @@ button:nth-child(2) {
 }
 
 
-/* 계산기 버튼: 검정색 숫자와 은은한 강조 */
+/* 계산기 버튼 숫자를 진하고 선명하게 */
 .calculator button {
     position: relative;
     border: none;
     border-radius: 8px;
     background: transparent;
     color: #000000;
-    font-weight: 700;
-    text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
+    font-weight: 900;
+    text-shadow: none;
+    -webkit-text-stroke: 0.4px #000000;
 }
 
 /* 계산기 결과값만 빨간색 */
