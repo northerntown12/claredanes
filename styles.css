@@ -517,7 +517,7 @@ button:nth-child(2) {
 
 /* 계산기 숫자를 더 또렷하게 */
 .calculator button {
-    color: #007bff;
+    color: #000000;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
 }
