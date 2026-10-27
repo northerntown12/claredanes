@@ -515,8 +515,12 @@ button:nth-child(2) {
 }
 
 
-/* 계산기 숫자를 더 또렷하게 */
+/* 계산기 버튼: 검정색 숫자와 은은한 강조 */
 .calculator button {
+    position: relative;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
     color: #000000;
     font-weight: 700;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.35);
@@ -529,15 +533,7 @@ button:nth-child(2) {
     font-weight: 700;
 }
 
-/* 버튼 크기는 유지하고, 안쪽 둥근 네모만 70% 크기로 */
-.calculator button {
-    position: relative;
-    border: none;
-    border-radius: 8px;
-    background: transparent;
-    color: black;
-    font-weight: 700;
-}
+
 
 .calculator button::before {
     content: "";
