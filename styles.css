@@ -1156,3 +1156,17 @@ body {
     .site-header { gap: 18px; }
     .site-header .page-header { animation: blink 1s steps(2, start) infinite; }
 }
+
+.naver-ad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.naver-ad img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
