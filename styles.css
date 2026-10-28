@@ -1096,3 +1096,63 @@ body {
     .copyright-row { gap: 12px; }
     .copyright-side-line { width: 24px; }
 }
+
+/* ===== 추가 수정: 회색 구분선, 나무 높이, 깜박이는 제목 ===== */
+body {
+    padding-top: 68px;
+}
+
+.site-header {
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.site-header .header-line {
+    background: #a6a6a6;
+}
+
+.site-header .page-header {
+    color: #e32636;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+.tree-panel {
+    align-items: stretch;
+    border-right-color: #a6a6a6;
+}
+
+.tree-panel img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+    object-position: center;
+}
+
+.center-panel {
+    border-right-color: #a6a6a6;
+}
+
+.ad-banner {
+    border-color: #b5b5b5;
+}
+
+.footer-main-line {
+    background: #a6a6a6;
+}
+
+/* 저작권 문구 양옆의 짧은 선 제거 */
+.copyright-side-line {
+    display: none !important;
+}
+
+@media screen and (max-width: 768px) {
+    body { padding-top: 36px; }
+    .site-header { gap: 18px; }
+    .site-header .page-header { animation: blink 1s steps(2, start) infinite; }
+}
