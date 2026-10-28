@@ -7,80 +7,116 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-   <div style="width: 390px; margin: 0 auto;">
-    <hr style="border: none; border-top: 1px solid blue; margin: 0;">
-    <hr style="border: none; border-top: 1px solid blue; margin: 5px 0 0 0;">
-</div>
-    <h1 class="page-header">Testing...</h1>
-    <div class="container">
-        <div class="windows-logo-layout">
-            <div class="square top-left">
-                <div class="calculator">
-                    <div class="display">
-                        <div class="previous-operand"></div>
-                        <div class="current-operand">0</div>
+    <!-- 페이지 상단 제목: 양쪽 가로선 사이에 제목 공간 확보 -->
+    <header class="site-header">
+        <span class="header-line" aria-hidden="true"></span>
+        <h1 class="page-header">Testing...</h1>
+    </header>
+
+    <div class="page-layout">
+        <!-- 왼쪽: 기존 강아지 대신 나무 이미지 -->
+        <aside class="tree-panel" aria-label="나무 이미지">
+            <img src="tree.jpg" alt="나무 이미지">
+        </aside>
+
+        <!-- 가운데: 기존 홈페이지 기능 -->
+        <main class="center-panel">
+            <div class="container">
+                <div class="windows-logo-layout">
+                    <div class="square top-left">
+                        <div class="calculator">
+                            <div class="display">
+                                <div class="previous-operand"></div>
+                                <div class="current-operand">0</div>
+                            </div>
+                            <button class="span-two">AC</button>
+                            <button>DEL</button>
+                            <button class="operator">÷</button>
+                            <button>7</button>
+                            <button>8</button>
+                            <button>9</button>
+                            <button class="operator">×</button>
+                            <button>4</button>
+                            <button>5</button>
+                            <button>6</button>
+                            <button class="operator">-</button>
+                            <button>1</button>
+                            <button>2</button>
+                            <button>3</button>
+                            <button class="operator">+</button>
+                            <button>0</button>
+                            <button>.</button>
+                            <button class="span-two">=</button>
+                        </div>
                     </div>
-                    <button class="span-two">AC</button>
-                    <button>DEL</button>
-                    <button class="operator">÷</button>
-                    <button>7</button>
-                    <button>8</button>
-                    <button>9</button>
-                    <button class="operator">×</button>
-                    <button>4</button>
-                    <button>5</button>
-                    <button>6</button>
-                    <button class="operator">-</button>
-                    <button>1</button>
-                    <button>2</button>
-                    <button>3</button>
-                    <button class="operator">+</button>
-                    <button>0</button>
-                    <button>.</button>
-                    <button class="span-two">=</button>
+
+                    <div class="square top-right">
+                        <div class="temp-converter">
+                            <h2>온도 변환기</h2>
+                            <div class="converter-input">
+                                <input type="number" id="celsius" placeholder="섭씨 (°C)" class="temp-input">
+                                <span class="equals">=</span>
+                                <input type="number" id="fahrenheit" placeholder="화씨 (°F)" class="temp-input">
+                            </div>
+                            <div class="converter-buttons">
+                                <button id="convert-c-to-f"> °C → °F </button>
+                                <button id="convert-f-to-c"> °F → °C </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="square bottom-left">
+                        <div class="lotto-container">
+                            <h2>로또 추첨기</h2>
+                            <div class="lotto-balls" id="lotto-balls">
+                                <div class="ball">?</div>
+                                <div class="ball">?</div>
+                                <div class="ball">?</div>
+                                <div class="ball">?</div>
+                                <div class="ball">?</div>
+                                <div class="ball">?</div>
+                                <span class="plus-sign">+</span>
+                                <div class="ball bonus">?</div>
+                            </div>
+                            <button id="lotto-btn" class="slot-btn">SPIN!</button>
+                        </div>
+                    </div>
+
+                    <div class="square bottom-right">
+                        <h2>날씨 정보</h2>
+                    </div>
                 </div>
+
             </div>
-            <div class="square top-right">
-                <div class="temp-converter">
-                    <h2>온도 변환기</h2>
-                   <div class="converter-input">
-                       <input type="number" id="celsius" placeholder="섭씨 (°C)" class="temp-input">
-                       <span class="equals">=</span>
-                       <input type="number" id="fahrenheit" placeholder="화씨 (°F)" class="temp-input">
-                    </div>
-                    <div class="converter-buttons">
-                        <button id="convert-c-to-f"> °C → °F </button>
-                        <button id="convert-f-to-c"> °F → °C </button>
-                    </div>
-                </div>
+        </main>
+
+        <!-- 오른쪽: PC에서만 보이는 12개 광고 배너 자리 -->
+        <aside class="ad-sidebar" aria-label="광고 배너">
+            <div class="ad-grid">
+                <div class="ad-banner" aria-label="배너 공간"></div>
+                <div class="ad-banner" aria-label="배너 공간"></div>
+                <div class="ad-banner" aria-label="배너 공간"></div>
+                <div class="ad-banner" aria-label="배너 공간"></div>
+                <div class="ad-banner" aria-label="배너 공간"></div>
+                <div class="ad-banner" aria-label="배너 공간"></div>
             </div>
-           <div class="square bottom-left">
-             <div class="lotto-container">
-             <h2> 로또 추첨기</h2>
-             <div class="lotto-balls" id="lotto-balls">
-            <div class="ball">?</div>
-            <div class="ball">?</div>
-            <div class="ball">?</div>
-            <div class="ball">?</div>
-            <div class="ball">?</div>
-            <div class="ball">?</div>
-            <span class="plus-sign">+</span>
-            <div class="ball bonus">?</div>
-        </div>
-        <button id="lotto-btn" class="slot-btn">SPIN!</button>
+        </aside>
     </div>
-</div> 
-            <div class="square bottom-right">
-                    <h2>날씨 정보</h2>
-            </div>    
-        </div>
-        <div class="footer">
-            <div class="footer-line"></div>
+
+    <!-- 페이지 하단: 구분선, 저작권 문구, 방문자 카운터 -->
+    <footer class="site-footer">
+        <div class="footer-main-line" aria-hidden="true"></div>
+        <div class="copyright-row">
+            <span class="copyright-side-line" aria-hidden="true"></span>
             <p class="copyright">Copyright © 2026 Summerman All rights reserved.</p>
+            <span class="copyright-side-line" aria-hidden="true"></span>
         </div>
-    </div>
+        <div class="visitor-counter" aria-label="방문자 통계">
+            <script src="https://www.stats4u.net/s4u.js" data-id="2739492242" data-style="3304" async></script>
+        </div>
+    </footer>
+
     <script src="script.js"></script>
     <script src="temp-converter.js"></script>
-    <script src="https://www.stats4u.net/s4u.js" data-id="2739492242" data-style="3304" async></script>
-   </body>
+</body>
 </html>
