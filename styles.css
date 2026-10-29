@@ -1193,7 +1193,7 @@ body {
 /* 구글 스타일 'G' 로고 텍스트 */
 .ad-grid .google-favicon-banner::after {
     content: "G";
-    font-size: 2.2rem;
+    font-size: 3.2rem;
     font-weight: 900;
     font-family: 'Segoe UI', sans-serif;
     color: #4285F4;
