@@ -1157,16 +1157,23 @@ body {
     .site-header .page-header { animation: blink 1s steps(2, start) infinite; }
 }
 
-.naver-ad {
+/* 슬레이트 그레이 파비콘 배너 스타일 (첫 번째 칸) */
+.ad-grid .ad-banner:first-child {
+    background: #576574; /* 슬레이트 그레이 배경 */
+    border: 1px solid #3b3f46;
     display: flex;
     justify-content: center;
     align-items: center;
-    text-decoration: none;
-    cursor: pointer;
+    position: relative;
+    overflow: hidden;
 }
 
-.naver-ad img {
-    width: 36px;
-    height: 36px;
-    object-fit: contain;
+/* 슬레이트 그레이 내부 'N' 로고 스타일 */
+.ad-grid .ad-banner:first-child::after {
+    content: "N";
+    color: #00d2d3; /* 민트/블루톤 포인트 컬러 */
+    font-size: 1.4rem;
+    font-weight: 900;
+    font-family: 'Segoe UI', sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
