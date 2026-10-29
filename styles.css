@@ -1172,7 +1172,7 @@ body {
 .ad-grid .ad-banner:first-child::after {
     content: "N";
     color: #00d2d3; /* 민트/블루톤 포인트 컬러 */
-    font-size: 1.4rem;
+    font-size: 2.3rem;
     font-weight: 900;
     font-family: 'Segoe UI', sans-serif;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
