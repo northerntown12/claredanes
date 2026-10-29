@@ -1178,9 +1178,10 @@ body {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-/* 구글 스타일 파비콘 배너 스타일 */
+
+/* 구글의 여러 색상을 활용한 G 모양 */
 .ad-grid .google-favicon-banner {
-    background: #ffffff; /* 화이트 배경 */
+    background: #ffffff;
     border: 1px solid #d2e1f3;
     display: flex;
     justify-content: center;
@@ -1190,12 +1191,21 @@ body {
     text-decoration: none;
 }
 
-/* 구글 스타일 'G' 로고 텍스트 */
 .ad-grid .google-favicon-banner::after {
     content: "G";
     font-size: 3.2rem;
     font-weight: 900;
-    font-family: 'Segoe UI', sans-serif;
-    color: #4285F4;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
+    font-family: Arial, sans-serif;
+    background: conic-gradient(
+        from -45deg,
+        #4285F4 0deg 90deg,
+        #34A853 90deg 180deg,
+        #FBBC05 180deg 250deg,
+        #EA4335 250deg 315deg,
+        #4285F4 315deg 360deg
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
 }
