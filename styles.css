@@ -1210,3 +1210,35 @@ body {
     text-shadow: none;
 }
 
+
+/* ===== 제목을 선 위로, 가로선을 네 개 박스 바로 위로 ===== */
+.site-header {
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.site-header .page-header {
+    order: 1;                 /* 제목이 위 */
+    font-size: 18px;          /* 기존 25px보다 작게 */
+    line-height: 1.3;
+    animation: blink 1s steps(2, start) infinite;
+}
+
+.site-header .header-line {
+    order: 2;                 /* 가로선이 제목 아래, 박스 바로 위 */
+}
+
+/* 네 개 박스를 위쪽에 붙여서 선과 간격 최소화 */
+.center-panel {
+    align-items: flex-start;
+    padding-top: 0;
+}
+
+.ad-sidebar {
+    padding-top: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .site-header { gap: 6px; margin-bottom: 12px; }
+    .site-header .page-header { font-size: 16px; }
+}
