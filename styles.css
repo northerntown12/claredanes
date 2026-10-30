@@ -1262,3 +1262,19 @@ body {
     .site-header { gap: 10px; margin-bottom: 12px; }
     .site-header .page-header { font-size: 16px; }
 }
+
+
+/* ===== Testing 글씨 위 파스텔 붓터치 배너 (banner.svg) ===== */
+.site-header::before {
+    content: "";
+    order: 0;                 /* 제목(order 1)보다 위 */
+    display: block;
+    width: 100%;
+    height: 80px;
+    margin: 10px 0 10px;      /* 배너 위아래 여백 */
+    background: url("banner.svg") center / 100% 100% no-repeat;
+}
+
+@media screen and (max-width: 768px) {
+    .site-header::before { height: 48px; margin: 4px 0 6px; }
+}
