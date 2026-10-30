@@ -1213,7 +1213,7 @@ body {
 
 /* ===== 제목을 선 위로, 가로선을 네 개 박스 바로 위로 ===== */
 .site-header {
-    gap: 6px;
+    gap: 14px;                /* Testing 글씨와 가로선 사이 여백 */
     margin-bottom: 8px;
 }
 
@@ -1232,13 +1232,33 @@ body {
 .center-panel {
     align-items: flex-start;
     padding-top: 0;
+    padding-bottom: 0;        /* 줄 높이 = 네 개 박스 높이 */
 }
 
 .ad-sidebar {
     padding-top: 0;
 }
 
+/* 나무 그림을 네 개 박스의 위/아래 끝선에 맞춤 */
+.tree-panel {
+    position: relative;
+    min-height: 0;            /* 박스 높이에 맞춰지도록 기존 620px 제거 */
+    padding: 0;
+    overflow: hidden;
+}
+
+.tree-panel img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(100% - 24px); /* 오른쪽 구분선과 24px 간격 유지 */
+    height: 100%;
+    max-height: none;
+    object-fit: cover;        /* 위아래 끝에 딱 맞추고 좌우는 살짝 잘릴 수 있음 */
+    object-position: center;
+}
+
 @media screen and (max-width: 768px) {
-    .site-header { gap: 6px; margin-bottom: 12px; }
+    .site-header { gap: 10px; margin-bottom: 12px; }
     .site-header .page-header { font-size: 16px; }
 }
