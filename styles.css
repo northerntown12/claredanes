@@ -1214,7 +1214,7 @@ body {
 /* ===== 제목을 선 위로, 가로선을 네 개 박스 바로 위로 ===== */
 .site-header {
     gap: 14px;                /* Testing 글씨와 가로선 사이 여백 */
-    margin-bottom: 8px;
+    margin-bottom: 40px;      /* 위 가로선 ↔ 박스 간격 (아래 가로선 ↔ 박스 간격과 동일) */
 }
 
 .site-header .page-header {
@@ -1259,22 +1259,26 @@ body {
 }
 
 @media screen and (max-width: 768px) {
-    .site-header { gap: 10px; margin-bottom: 12px; }
+    .site-header { gap: 10px; margin-bottom: 30px; }
     .site-header .page-header { font-size: 16px; }
 }
 
 
-/* ===== Testing 글씨 위 파스텔 붓터치 배너 (banner.svg) ===== */
+/* ===== Testing 글씨 위 붓글씨 배너 (banner.svg) ===== */
 .site-header::before {
     content: "";
     order: 0;                 /* 제목(order 1)보다 위 */
     display: block;
     width: 100%;
-    height: 80px;
+    aspect-ratio: 15 / 1;     /* 그림 비율 그대로 (1500px 폭에서 높이 100px) */
     margin: 10px 0 10px;      /* 배너 위아래 여백 */
     background: url("banner.svg") center / 100% 100% no-repeat;
 }
 
 @media screen and (max-width: 768px) {
-    .site-header::before { height: 48px; margin: 4px 0 6px; }
+    .site-header::before {
+        aspect-ratio: 6 / 1;  /* 모바일은 가운데를 중심으로 꽉 채움 */
+        margin: 4px 0 6px;
+        background-size: cover;
+    }
 }
