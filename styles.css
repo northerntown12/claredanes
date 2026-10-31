@@ -607,7 +607,6 @@ button:active {
     .site-footer { width: 100%; margin-top: 30px; }
 }
 
-
 /* ===== 날씨 정보 ===== */
 .square.bottom-right { padding-top: 0; }
 
@@ -660,45 +659,113 @@ button:active {
     text-align: center;
 }
 
+/* 검색줄: 가운데 정렬, 검색창 + 목록 화살표 + 검색 버튼 */
 .weather-search {
     display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    gap: 3px;
+    gap: 6px;
+}
+
+.weather-combo {
+    display: flex;
+    flex: 0 1 60%;
+    min-width: 0;
 }
 
 .weather-search input {
     flex: 1 1 0;
-    min-width: 0;
     width: 0;
+    min-width: 0;
     padding: 3px 5px;
     border: 1px solid rgba(255, 255, 255, 0.7);
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.9);
+    border-right: 0;
+    border-radius: 6px 0 0 6px;
+    background: rgba(255, 255, 255, 0.92);
     color: #222;
     font-size: 0.7rem;
     outline: none;
     text-shadow: none;
 }
 
-.weather-search button {
+.weather-search .weather-arrow {
     flex: 0 0 auto;
-    padding: 3px 7px;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.35);
-    color: #fff;
+    padding: 0 5px;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 0 6px 6px 0;
+    background: rgba(255, 255, 255, 0.92);
+    color: #444;
     font-size: 0.7rem;
     text-shadow: none;
 }
 
-.weather-search button:hover { background: rgba(0, 0, 0, 0.55); }
+.weather-search .weather-arrow:hover { background: rgba(235, 235, 235, 0.95); }
+
+/* 검색 버튼: 둥근 네모 + 스칼렛 */
+.weather-search .weather-go {
+    flex: 0 0 auto;
+    padding: 4px 10px;
+    border: 0;
+    border-radius: 10px;
+    background: #ff2400;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    text-shadow: none;
+}
+
+.weather-search .weather-go:hover  { background: #e01f00; }
+.weather-search .weather-go:active { background: #c21b00; }
+
+/* 지역 목록 (직접 만든 목록: 모바일에서도 사라지지 않아요) */
+.weather-dropdown {
+    position: absolute;
+    top: 56px;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: min-content;
+    gap: 2px;
+    padding: 4px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    background: rgba(12, 20, 34, 0.95);
+    text-shadow: none;
+}
+
+.weather-dropdown[hidden] { display: none; }
+
+.weather-dropdown .weather-option {
+    padding: 5px 6px;
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    font-size: 0.8rem;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.weather-dropdown .weather-option:hover   { background: rgba(255, 255, 255, 0.18); }
+.weather-dropdown .weather-option.current { background: rgba(255, 36, 0, 0.6); }
 
 .weather-place {
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.72rem;
-    opacity: 0.95;
+    font-size: 1.4rem;
+    line-height: 1.15;
+    font-weight: 700;
 }
 
 .weather-main {
@@ -709,7 +776,7 @@ button:active {
 }
 
 .weather-icon {
-    font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
     line-height: 1;
     text-shadow: none;
     animation: weather-float 3.2s ease-in-out infinite;
@@ -720,7 +787,7 @@ button:active {
 }
 
 .weather-temp {
-    font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+    font-size: clamp(1.4rem, 2.6vw, 2rem);
     font-weight: 700;
     line-height: 1;
 }
@@ -813,6 +880,11 @@ button:active {
 }
 
 @keyframes weather-pulse {
-    0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 4px rgba(255, 220, 80, 0.7)); }
-    50%      { transform: scale(1.1);  filter: drop-shadow(0 0 10px rgba(255, 220, 80, 1)); }
+    0%, 100% { transform: scale(1);   filter: drop-shadow(0 0 4px rgba(255, 220, 80, 0.7)); }
+    50%      { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(255, 220, 80, 1)); }
+}
+
+/* 폰: 입력칸 글자를 16px로 해서 터치 시 화면이 확대되며 흔들리는 걸 막아요 */
+@media screen and (max-width: 768px) {
+    .weather-search input { font-size: 16px; }
 }
