@@ -477,7 +477,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             lottoBtn.style.backgroundColor = "";
                             lottoBtn.style.fontSize = "";
                         });
-                    }, 770);
+                    }, 600);
 
                     revealTimeouts.push(fanfareTimeout);
                 }
