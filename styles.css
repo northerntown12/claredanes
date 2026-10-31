@@ -22,10 +22,11 @@ body {
 
 .banner-happy {
     position: relative;
-    z-index: 2;              /* 줄무늬보다 위 */
     display: block;
     width: 100%;
-    height: auto;
+    aspect-ratio: 1024 / 289;   /* 원본(1024×434) 높이의 2/3 */
+    object-fit: cover;          /* 비율 유지, 위아래를 잘라서 맞춤 */
+    object-position: center;    /* 잘리는 위치 */
 }
 
 .banner-title {
