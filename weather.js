@@ -19,6 +19,8 @@
     var humEl = document.getElementById("weather-hum");
     var windEl = document.getElementById("weather-wind");
     var msgEl = document.getElementById("weather-msg");
+    var forecastEl = document.getElementById("weather-forecast-list");
+    var DEFAULT_NOTE = "업데이트 주기: 10분";
 
     function normalize(text) {
         return String(text).toLowerCase().replace(/\s+/g, "");
@@ -131,10 +133,73 @@
     }
 
     function setMessage(text) {
-        msgEl.textContent = text || "";
+        msgEl.textContent = text || DEFAULT_NOTE;
     }
 
-    function render(place, current) {
+    function pad2(n) { return n < 10 ? "0" + n : String(n); }
+
+    // "2026-11-01"에 n일을 더한 날짜 문자열
+    function addDays(dateStr, n) {
+        var p = dateStr.split("-");
+        var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + n));
+        return d.getUTCFullYear() + "-" + pad2(d.getUTCMonth() + 1) + "-" + pad2(d.getUTCDate());
+    }
+
+    /* 오른쪽 작은 네모칸: 해당 지역의 아침 6시 예보
+       - 지역 현지 시각이 06시 이전(자정~새벽)이면 "오늘"도 함께 보여줘요.
+       - 그 외에는 "내일", "모레"만 보여줘요. */
+    function renderForecast(current, hourly) {
+        forecastEl.innerHTML = "";
+
+        var nowText = String(current.time || "");
+        var today = nowText.slice(0, 10);
+        var hour = parseInt(nowText.slice(11, 13), 10);
+
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) return;
+
+        var days = [];
+        if (!isNaN(hour) && hour < 6) days.push({ label: "오늘", date: today });
+        days.push({ label: "내일", date: addDays(today, 1) });
+        days.push({ label: "모레", date: addDays(today, 2) });
+
+        days.forEach(function (day) {
+            var idx = hourly && hourly.time ? hourly.time.indexOf(day.date + "T06:00") : -1;
+
+            var box = document.createElement("div");
+            box.className = "weather-fbox";
+
+            var label = document.createElement("span");
+            label.className = "fb-label";
+            label.textContent = day.label;
+
+            var row = document.createElement("span");
+            row.className = "fb-row";
+
+            var icon = document.createElement("span");
+            icon.className = "fb-icon";
+
+            var temp = document.createElement("span");
+            temp.className = "fb-temp";
+
+            if (idx === -1) {
+                icon.textContent = "-";
+                temp.textContent = "--";
+            } else {
+                var info = describe(hourly.weather_code[idx], hourly.is_day ? hourly.is_day[idx] : 1);
+                icon.textContent = info.icon;
+                temp.textContent = Math.round(hourly.temperature_2m[idx]) + "°";
+                box.title = day.label + " 오전 6시: " + info.text;
+            }
+
+            row.appendChild(icon);
+            row.appendChild(temp);
+            box.appendChild(label);
+            box.appendChild(row);
+            forecastEl.appendChild(box);
+        });
+    }
+
+    function render(place, current, hourly) {
         var info = describe(current.weather_code, current.is_day);
 
         widget.setAttribute("data-cond", info.cond);
@@ -148,6 +213,7 @@
         feelEl.textContent = Math.round(current.apparent_temperature) + "°";
         humEl.textContent = Math.round(current.relative_humidity_2m) + "%";
         windEl.textContent = Number(current.wind_speed_10m).toFixed(1) + "m/s";
+        renderForecast(current, hourly);
         setMessage("");
     }
 
@@ -161,6 +227,7 @@
             "?latitude=" + place.lat +
             "&longitude=" + place.lon +
             "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,is_day" +
+            "&hourly=temperature_2m,weather_code,is_day&forecast_days=3" +
             "&wind_speed_unit=ms&timezone=auto";
 
         fetch(url)
@@ -171,11 +238,11 @@
             .then(function (data) {
                 if (myId !== requestId) return;      // 오래된 요청은 무시
                 if (!data || !data.current) throw new Error("no data");
-                render(place, data.current);
+                render(place, data.current, data.hourly);
             })
             .catch(function () {
                 if (myId !== requestId) return;
-                setMessage("날씨를 불러오지 못했어요. 잠시 뒤 다시 시도해 주세요.");
+                setMessage("날씨를 불러오지 못했어요.");
             });
     }
 
@@ -284,7 +351,7 @@
                 if (myId !== requestId) return;
 
                 if (!data || !data.results || data.results.length === 0) {
-                    setMessage("'" + query + "'을(를) 찾지 못했어요. 도시 이름으로 검색해 보세요.");
+                    setMessage("'" + query + "'을(를) 찾지 못했어요.");
                     return;
                 }
 
@@ -297,7 +364,7 @@
             })
             .catch(function () {
                 if (myId !== requestId) return;
-                setMessage("검색에 실패했어요. 잠시 뒤 다시 시도해 주세요.");
+                setMessage("검색에 실패했어요.");
             });
     }
 
