@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     function revealNumbersSequentially(currentRunId) {
         // 오른쪽 공일수록 공개 간격이 길어져서 긴장감이 커져요. (ms)
-        const gaps = [0, 400, 500, 650, 850, 1100, 1400];
+        const gaps = [0, 400, 500, 650, 850, 1100, 150];
         let elapsed = 0;
 
         ballEls.forEach((ball, idx) => {
