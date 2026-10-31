@@ -90,7 +90,40 @@
                     </div>
 
                     <div class="square bottom-right">
-                        <h2>날씨 정보</h2>
+                        <div class="weather-widget" id="weather-widget" data-cond="clear" data-night="0">
+                            <div class="weather-fx" id="weather-fx" aria-hidden="true"></div>
+                            <div class="weather-content">
+                                <h2>날씨 정보</h2>
+                                <div class="weather-search">
+                                    <input type="text" id="weather-input" list="weather-places"
+                                           placeholder="도시 입력 (예: 서울)" autocomplete="off" aria-label="도시 입력">
+                                    <button type="button" id="weather-search">검색</button>
+                                    <datalist id="weather-places">
+                                        <option value="천안"></option>
+                                        <option value="천안 수신면"></option>
+                                        <option value="서울"></option>
+                                        <option value="인천"></option>
+                                        <option value="대전"></option>
+                                        <option value="대구"></option>
+                                        <option value="광주"></option>
+                                        <option value="부산"></option>
+                                        <option value="제주"></option>
+                                    </datalist>
+                                </div>
+                                <div class="weather-place" id="weather-place">-</div>
+                                <div class="weather-main">
+                                    <span class="weather-icon" id="weather-icon">⏳</span>
+                                    <span class="weather-temp" id="weather-temp">--°</span>
+                                </div>
+                                <div class="weather-desc" id="weather-desc">불러오는 중...</div>
+                                <div class="weather-details">
+                                    <div><span>체감</span><b id="weather-feel">--</b></div>
+                                    <div><span>습도</span><b id="weather-hum">--</b></div>
+                                    <div><span>바람</span><b id="weather-wind">--</b></div>
+                                </div>
+                                <div class="weather-msg" id="weather-msg" role="status"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -125,14 +158,17 @@
     <footer class="site-footer">
         <div class="footer-main-line" aria-hidden="true"></div>
         <div class="copyright-row">
+            <span class="copyright-side-line" aria-hidden="true"></span>
             <p class="copyright">Copyright © 2026 Summerman All rights reserved.</p>
-           </div>
+            <span class="copyright-side-line" aria-hidden="true"></span>
+        </div>
         <div class="visitor-counter" aria-label="방문자 통계">
             <script src="https://www.stats4u.net/s4u.js" data-id="2739492242" data-style="3304" async></script>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    <script src="weather.js"></script>
     <script src="temp-converter.js"></script>
 </body>
 </html>
