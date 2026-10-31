@@ -1,4 +1,3 @@
-
 /* ===== 계산기 버튼 소리 ===== */
 let calculatorAudioContext;
 
@@ -326,9 +325,17 @@ document.addEventListener("DOMContentLoaded", () => {
     let revealTimeouts = [];
     let finalNumbers = [];
     let runId = 0;
+    let flipDelays = [];
+    let revealed = [];
+
+    // 스핀 전: 무지개색 공 + 물음표 (빨주노초파남보)
+    const rainbowClasses = ["num-1", "num-8", "num-15", "num-22", "num-29", "num-36", "num-43"];
+    ballEls.forEach((ball, i) => {
+        ball.classList.add(rainbowClasses[i % rainbowClasses.length]);
+    });
 
     function clearRollIntervals() {
-        rollIntervals.forEach(interval => clearInterval(interval));
+        rollIntervals.forEach(t => clearTimeout(t));
         rollIntervals = [];
     }
 
@@ -413,57 +420,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
   
-function revealNumbersSequentially(currentRunId) {
-    // 각 공은 자신의 결과가 공개될 때까지 계속 회전해요.
-    ballEls.forEach((ball, idx) => {
-        const timeout = setTimeout(() => {
-            if (runId !== currentRunId || !isRolling) {
-                return;
-            }
+    function revealNumbersSequentially(currentRunId) {
+        // 오른쪽 공일수록 공개 간격이 길어져서 긴장감이 커져요. (ms)
+        const gaps = [0, 400, 500, 650, 850, 1100, 1400];
+        let elapsed = 0;
 
-            // 해당 공의 회전만 멈춰요.
-            const interval = rollIntervals[idx];
-            if (interval !== undefined) {
-                clearInterval(interval);
+        ballEls.forEach((ball, idx) => {
+            elapsed += gaps[idx] !== undefined ? gaps[idx] : 1400;
+
+            const timeout = setTimeout(() => {
+                if (runId !== currentRunId || !isRolling) {
+                    return;
+                }
+
+                // 이 공의 회전만 멈춰요.
+                revealed[idx] = true;
+                clearTimeout(rollIntervals[idx]);
                 rollIntervals[idx] = undefined;
-            }
+                ball.classList.remove("rolling");
 
-            ball.classList.remove("rolling");
+                const num = finalNumbers[idx];
+                ball.innerText = num;
+                setBallColor(ball, num);
 
-            // 해당 공의 최종 결과를 표시해요.
-            const num = finalNumbers[idx];
-            ball.innerText = num;
-            setBallColor(ball, num);
+                // 아직 도는 공들은 점점 느리게 돌아요.
+                for (let j = idx + 1; j < ballEls.length; j++) {
+                    flipDelays[j] = 45 + (idx + 1) * 45;
+                }
 
-            // 마지막 공까지 공개되면 축하 단계로 넘어가요.
-            if (idx === ballEls.length - 1) {
-               lottoBtn.innerText = "👍";
-               lottoBtn.style.opacity = "1";
-               lottoBtn.style.backgroundColor = "#0057D9";
-               lottoBtn.style.color = "#FFFFFF";
-               lottoBtn.style.fontSize = "28px";
-               lottoBtn.style.fontWeight = "bold";
-
-                playOlympicsFanfare(() => {
-                    if (runId !== currentRunId) {
-                        return;
-                    }
-
-                    isRolling = false;
-                    canStop = false;
-
-                    lottoBtn.innerText = "AGAIN!";
-                    lottoBtn.style.color = "#000000";
+                // 마지막 공이 공개된 직후 팡파레 시작
+                if (idx === ballEls.length - 1) {
+                    lottoBtn.innerText = "👍";
                     lottoBtn.style.opacity = "1";
-                    lottoBtn.style.backgroundColor = "";
-                    lottoBtn.style.fontSize = "";
-                });
-            }
-        }, idx * 350);
+                    lottoBtn.style.backgroundColor = "#0057D9";
+                    lottoBtn.style.color = "#FFFFFF";
+                    lottoBtn.style.fontSize = "28px";
+                    lottoBtn.style.fontWeight = "bold";
 
-        revealTimeouts.push(timeout);
-    });
-}
+                    playOlympicsFanfare(() => {
+                        if (runId !== currentRunId) {
+                            return;
+                        }
+
+                        isRolling = false;
+                        canStop = false;
+
+                        lottoBtn.innerText = "AGAIN!";
+                        lottoBtn.style.color = "#000000";
+                        lottoBtn.style.opacity = "1";
+                        lottoBtn.style.backgroundColor = "";
+                        lottoBtn.style.fontSize = "";
+                    });
+                }
+            }, elapsed);
+
+            revealTimeouts.push(timeout);
+        });
+    }
 
 
     function startRolling() {
@@ -482,11 +495,12 @@ function revealNumbersSequentially(currentRunId) {
         lottoBtn.style.color = "#000000";
         lottoBtn.style.opacity = "0.7";
 
-        ballEls.forEach((ball, idx) => {
-            ball.classList.add("rolling");
+        flipDelays = ballEls.map(() => 45);
+        revealed = ballEls.map(() => false);
 
-            const interval = setInterval(() => {
-                if (runId !== currentRunId || !isRolling) {
+        function scheduleFlip(ball, idx) {
+            rollIntervals[idx] = setTimeout(() => {
+                if (runId !== currentRunId || !isRolling || revealed[idx]) {
                     return;
                 }
 
@@ -494,11 +508,15 @@ function revealNumbersSequentially(currentRunId) {
 
                 ball.innerText = randomNum;
                 setBallColor(ball, randomNum);
-
                 playFlipSound();
-            }, 45);
 
-            rollIntervals[idx] = interval;
+                scheduleFlip(ball, idx);
+            }, flipDelays[idx]);
+        }
+
+        ballEls.forEach((ball, idx) => {
+            ball.classList.add("rolling");
+            scheduleFlip(ball, idx);
         });
 
         // 4초 회전한 뒤 번호를 왼쪽부터 차례대로 공개해요.
