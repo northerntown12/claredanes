@@ -661,16 +661,19 @@ button:active {
 
 /* 검색줄: 가운데 정렬, 검색창 + 목록 화살표 + 검색 버튼 */
 .weather-search {
+    /* 검색창(+▾)은 항상 가운데, 검색 버튼은 그 오른쪽 바깥에 붙어요 */
+    --combo-w: min(60%, calc(100% - 84px));
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    gap: 6px;
 }
 
 .weather-combo {
     display: flex;
-    flex: 0 1 60%;
+    flex: 0 0 auto;
+    width: var(--combo-w);
     min-width: 0;
 }
 
@@ -691,13 +694,16 @@ button:active {
 
 .weather-search .weather-arrow {
     flex: 0 0 auto;
-    padding: 0 5px;
+    min-width: 24px;
+    padding: 0 6px;
     border: 1px solid rgba(255, 255, 255, 0.7);
     border-left: 1px solid rgba(0, 0, 0, 0.12);
     border-radius: 0 6px 6px 0;
     background: rgba(255, 255, 255, 0.92);
-    color: #444;
-    font-size: 0.7rem;
+    color: #222;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1;
     text-shadow: none;
 }
 
@@ -705,20 +711,26 @@ button:active {
 
 /* 검색 버튼: 둥근 네모 + 스칼렛 */
 .weather-search .weather-go {
-    flex: 0 0 auto;
-    padding: 4px 10px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(50% + var(--combo-w) / 2 + 6px);
+    display: flex;
+    align-items: center;
+    padding: 0 9px;
     border: 0;
     border-radius: 10px;
-    background: #ff2400;
+    background: #8e2b8b;
     color: #fff;
     font-size: 0.72rem;
     font-weight: 700;
+    white-space: nowrap;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
     text-shadow: none;
 }
 
-.weather-search .weather-go:hover  { background: #e01f00; }
-.weather-search .weather-go:active { background: #c21b00; }
+.weather-search .weather-go:hover  { background: #7a2478; }
+.weather-search .weather-go:active { background: #671e65; }
 
 /* 지역 목록 (직접 만든 목록: 모바일에서도 사라지지 않아요) */
 .weather-dropdown {
@@ -748,7 +760,7 @@ button:active {
     border-radius: 6px;
     background: transparent;
     color: #fff;
-    font-size: 1rem;
+    font-size: 1.2rem;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
@@ -964,3 +976,29 @@ button:active {
     font-size: 0.75rem;
     font-weight: 700;
 }
+
+/* 예보 칸을 누르면(폰) 나오는 간단 설명 말풍선 */
+.weather-fbox {
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.weather-tip {
+    position: absolute;
+    z-index: 5;
+    width: max-content;
+    max-width: 60%;
+    padding: 3px 7px;
+    border-radius: 8px;
+    background: rgba(12, 20, 34, 0.92);
+    color: #fff;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    text-shadow: none;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.weather-tip[hidden] { display: none; }
