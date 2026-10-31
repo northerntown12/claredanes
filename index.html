@@ -105,18 +105,26 @@
                                     </div>
                                     <button type="button" id="weather-search" class="weather-go">검색</button>
                                 </div>
-                                <div class="weather-place" id="weather-place">-</div>
-                                <div class="weather-main">
-                                    <span class="weather-icon" id="weather-icon">⏳</span>
-                                    <span class="weather-temp" id="weather-temp">--°</span>
+                                <div class="weather-mid">
+                                    <div class="weather-now">
+                                        <div class="weather-place" id="weather-place">-</div>
+                                        <div class="weather-main">
+                                            <span class="weather-icon" id="weather-icon">⏳</span>
+                                            <span class="weather-temp" id="weather-temp">--°</span>
+                                        </div>
+                                        <div class="weather-desc" id="weather-desc">불러오는 중...</div>
+                                    </div>
+                                    <div class="weather-forecast" aria-label="아침 6시 예보">
+                                        <div class="weather-forecast-cap">오전 6시</div>
+                                        <div class="weather-forecast-list" id="weather-forecast-list"></div>
+                                    </div>
                                 </div>
-                                <div class="weather-desc" id="weather-desc">불러오는 중...</div>
                                 <div class="weather-details">
                                     <div><span>체감</span><b id="weather-feel">--</b></div>
                                     <div><span>습도</span><b id="weather-hum">--</b></div>
                                     <div><span>바람</span><b id="weather-wind">--</b></div>
                                 </div>
-                                <div class="weather-msg" id="weather-msg" role="status"></div>
+                                <div class="weather-msg" id="weather-msg" role="status">업데이트 주기: 10분</div>
                             </div>
                         </div>
                     </div>
@@ -167,8 +175,3 @@
     <script src="temp-converter.js"></script>
 </body>
 </html>
-
-             
-              
-                      
- 
