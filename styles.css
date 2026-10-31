@@ -1282,3 +1282,28 @@ body {
         background-size: cover;
     }
 }
+
+.main-banner {
+  width: 100%;
+  max-width: 1500px;   
+  margin: 0 auto;
+}
+
+/* 위에 오는 happybanner (전체 출력, 잘리지 않음) */
+.banner-happy {
+  position: relative;
+  z-index: 2;          /* 줄무늬보다 위에 그려짐 */
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* 아래에 깔리는 줄무늬 */
+.banner-stripe {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: -3.33%;  /* 줄무늬 높이의 절반만큼 위로 올라가 그림 밑에 겹침 */
+}
