@@ -763,7 +763,7 @@ button:active {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 0.56rem;
+    font-size: 0.8rem;
     line-height: 1.2;
     font-weight: 700;
 }
