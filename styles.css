@@ -643,19 +643,19 @@ button:active {
     z-index: 2;
     width: 100%;
     height: 100%;
-    padding: 6px 8px 6px;
+    padding: 14px 8px 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    gap: 2px;
+    gap: 4px;
 }
 
 .square.bottom-right .weather-widget h2 {
     margin: 0;
     width: 100%;
     color: inherit;
-    font-size: 0.95rem;
+    font-size: 1.3rem;
     text-align: center;
 }
 
@@ -763,8 +763,8 @@ button:active {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 1.4rem;
-    line-height: 1.15;
+    font-size: 0.56rem;
+    line-height: 1.2;
     font-weight: 700;
 }
 
@@ -811,11 +811,16 @@ button:active {
 .weather-details span { font-size: 0.6rem; opacity: 0.85; }
 .weather-details b { font-size: 0.72rem; font-weight: 700; white-space: nowrap; }
 
+/* 맨 아래 작은 글씨 (업데이트 주기 / 안내 문구) */
 .weather-msg {
-    min-height: 12px;
-    font-size: 0.62rem;
-    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.55rem;
     line-height: 1.2;
+    text-align: center;
+    opacity: 0.85;
 }
 
 /* 비 / 눈 / 번개 효과 */
@@ -887,4 +892,75 @@ button:active {
 /* 폰: 입력칸 글자를 16px로 해서 터치 시 화면이 확대되며 흔들리는 걸 막아요 */
 @media screen and (max-width: 768px) {
     .weather-search input { font-size: 16px; }
+}
+
+/* 가운데 영역: 왼쪽 현재 날씨 + 오른쪽 아침 6시 예보 */
+.weather-mid {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    width: 100%;
+}
+
+.weather-now {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.weather-forecast {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.weather-forecast-cap {
+    font-size: 0.55rem;
+    line-height: 1;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.weather-forecast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.weather-fbox {
+    min-width: 3.1rem;
+    padding: 2px 5px;
+    border-radius: 7px;
+    background: rgba(0, 0, 0, 0.28);
+    text-align: center;
+    line-height: 1.15;
+}
+
+.weather-fbox .fb-label {
+    display: block;
+    font-size: 0.58rem;
+    opacity: 0.9;
+}
+
+.weather-fbox .fb-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    white-space: nowrap;
+}
+
+.weather-fbox .fb-icon {
+    font-size: 0.85rem;
+    text-shadow: none;
+}
+
+.weather-fbox .fb-temp {
+    font-size: 0.75rem;
+    font-weight: 700;
 }
