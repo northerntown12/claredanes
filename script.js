@@ -457,20 +457,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     lottoBtn.style.fontSize = "28px";
                     lottoBtn.style.fontWeight = "bold";
 
-                    playOlympicsFanfare(() => {
+                    // 마지막 공이 바뀐 뒤 0.5초 후에 팡파레 시작
+                    const fanfareTimeout = setTimeout(() => {
                         if (runId !== currentRunId) {
                             return;
                         }
 
-                        isRolling = false;
-                        canStop = false;
+                        playOlympicsFanfare(() => {
+                            if (runId !== currentRunId) {
+                                return;
+                            }
 
-                        lottoBtn.innerText = "AGAIN!";
-                        lottoBtn.style.color = "#000000";
-                        lottoBtn.style.opacity = "1";
-                        lottoBtn.style.backgroundColor = "";
-                        lottoBtn.style.fontSize = "";
-                    });
+                            isRolling = false;
+                            canStop = false;
+
+                            lottoBtn.innerText = "AGAIN!";
+                            lottoBtn.style.color = "#000000";
+                            lottoBtn.style.opacity = "1";
+                            lottoBtn.style.backgroundColor = "";
+                            lottoBtn.style.fontSize = "";
+                        });
+                    }, 500);
+
+                    revealTimeouts.push(fanfareTimeout);
                 }
             }, elapsed);
 
