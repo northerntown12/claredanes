@@ -1298,12 +1298,3 @@ body {
   height: auto;
 }
 
-/* 아래에 깔리는 줄무늬 */
-.banner-stripe {
-  position: relative;
-  z-index: 1;
-  display: block;
-  width: 100%;
-  height: auto;
-  margin-top: -3.33%;  /* 줄무늬 높이의 절반만큼 위로 올라가 그림 밑에 겹침 */
-}
