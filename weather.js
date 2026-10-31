@@ -7,7 +7,10 @@
 
     var fxEl = document.getElementById("weather-fx");
     var inputEl = document.getElementById("weather-input");
+    var toggleBtn = document.getElementById("weather-toggle");
     var searchBtn = document.getElementById("weather-search");
+    var searchRow = document.getElementById("weather-searchrow");
+    var dropdownEl = document.getElementById("weather-dropdown");
     var placeEl = document.getElementById("weather-place");
     var iconEl = document.getElementById("weather-icon");
     var tempEl = document.getElementById("weather-temp");
@@ -17,22 +20,47 @@
     var windEl = document.getElementById("weather-wind");
     var msgEl = document.getElementById("weather-msg");
 
-    /* 미리 등록한 지역. names는 공백을 뺀 이름으로 비교해요. */
+    function normalize(text) {
+        return String(text).toLowerCase().replace(/\s+/g, "");
+    }
+
+    /* 목록에 나오는 지역들 (인구 많은 대도시 20곳 + 천안 수신면, 제주) */
     var PRESETS = [
-        { names: ["천안", "천안시", "cheonan"], label: "천안", lat: 36.8151, lon: 127.1139 },
-        // ※ 수신면 좌표는 대략적인 값이에요. 정확한 좌표로 바꾸려면 lat, lon을 수정하세요.
-        { names: ["천안수신면", "천안시수신면", "수신면", "충남천안수신면"], label: "천안 수신면", lat: 36.7396, lon: 127.2960 },
-        { names: ["서울", "서울시", "seoul"], label: "서울", lat: 37.5665, lon: 126.9780 },
-        { names: ["인천", "인천시", "incheon"], label: "인천", lat: 37.4563, lon: 126.7052 },
-        { names: ["대전", "대전시", "daejeon"], label: "대전", lat: 36.3504, lon: 127.3845 },
-        { names: ["대구", "대구시", "daegu"], label: "대구", lat: 35.8714, lon: 128.6014 },
-        { names: ["광주", "광주시"], label: "광주", lat: 35.1595, lon: 126.8526 },
-        { names: ["부산", "부산시", "busan"], label: "부산", lat: 35.1796, lon: 129.0756 },
-        { names: ["제주", "제주도", "jeju"], label: "제주", lat: 33.4996, lon: 126.5312 }
+        { label: "서울",   lat: 37.5665, lon: 126.9780 },
+        { label: "부산",   lat: 35.1796, lon: 129.0756 },
+        { label: "인천",   lat: 37.4563, lon: 126.7052 },
+        { label: "대구",   lat: 35.8714, lon: 128.6014 },
+        { label: "대전",   lat: 36.3504, lon: 127.3845 },
+        { label: "광주",   lat: 35.1595, lon: 126.8526 },
+        { label: "울산",   lat: 35.5384, lon: 129.3114 },
+        { label: "수원",   lat: 37.2636, lon: 127.0286 },
+        { label: "창원",   lat: 35.2279, lon: 128.6811 },
+        { label: "고양",   lat: 37.6584, lon: 126.8320 },
+        { label: "용인",   lat: 37.2411, lon: 127.1776 },
+        { label: "성남",   lat: 37.4200, lon: 127.1265 },
+        { label: "청주",   lat: 36.6424, lon: 127.4890 },
+        { label: "부천",   lat: 37.5034, lon: 126.7660 },
+        { label: "화성",   lat: 37.1996, lon: 126.8312 },
+        { label: "안산",   lat: 37.3219, lon: 126.8309 },
+        { label: "남양주", lat: 37.6360, lon: 127.2165 },
+        { label: "안양",   lat: 37.3943, lon: 126.9568 },
+        { label: "전주",   lat: 35.8242, lon: 127.1480 },
+        { label: "천안",   lat: 36.8151, lon: 127.1139, aliases: ["cheonan"] },
+        // ※ 수신면 좌표는 장산리(홍대용과학관) 부근 값이라 대략적이에요. 정확히 바꾸려면 lat, lon을 수정하세요.
+        { label: "천안 수신면", lat: 36.7396, lon: 127.2960, aliases: ["수신면", "천안시수신면", "충남천안수신면"] },
+        { label: "제주",   lat: 33.4996, lon: 126.5312, aliases: ["제주도", "제주시"] }
     ];
 
+    /* 검색용 이름(공백 제거)을 미리 만들어 둬요: 이름, 이름+시, 별칭 */
+    PRESETS.forEach(function (p) {
+        var base = normalize(p.label);
+        p.keys = [base, base + "시"];
+        (p.aliases || []).forEach(function (a) { p.keys.push(normalize(a)); });
+    });
+
     var STORAGE_KEY = "weatherPlace";
-    var currentPlace = PRESETS[0];
+    var DEFAULT_PLACE = PRESETS.filter(function (p) { return p.label === "천안"; })[0];
+    var currentPlace = DEFAULT_PLACE;
     var requestId = 0;
 
     /* WMO 날씨 코드 -> 설명, 아이콘, 배경 종류 */
@@ -113,7 +141,7 @@
         widget.setAttribute("data-night", current.is_day ? "0" : "1");
         setParticles(info.cond);
 
-        placeEl.textContent = "📍 " + place.label;
+        placeEl.textContent = place.label;
         iconEl.textContent = info.icon;
         tempEl.textContent = Math.round(current.temperature_2m) + "°";
         descEl.textContent = info.text;
@@ -126,7 +154,7 @@
     function loadWeather(place) {
         var myId = ++requestId;
         currentPlace = place;
-        placeEl.textContent = "📍 " + place.label;
+        placeEl.textContent = place.label;
         setMessage("불러오는 중...");
 
         var url = "https://api.open-meteo.com/v1/forecast" +
@@ -151,14 +179,11 @@
             });
     }
 
-    function normalize(text) {
-        return String(text).toLowerCase().replace(/\s+/g, "");
-    }
-
     function findPreset(query) {
         var key = normalize(query);
+        if (!key) return null;
         for (var i = 0; i < PRESETS.length; i++) {
-            if (PRESETS[i].names.indexOf(key) !== -1) return PRESETS[i];
+            if (PRESETS[i].keys.indexOf(key) !== -1) return PRESETS[i];
         }
         return null;
     }
@@ -169,7 +194,68 @@
         } catch (e) { /* 저장 실패는 무시 */ }
     }
 
+    /* ===== 지역 목록 (직접 만든 목록) =====
+       브라우저 기본 목록(datalist)은 폰에서 열렸다가 바로 사라지는 문제가 있어서
+       직접 만든 목록으로 바꿨어요. 선택하거나 바깥을 누를 때만 닫혀요. */
+    function buildDropdown(filterText) {
+        var key = normalize(filterText || "");
+        var count = 0;
+
+        dropdownEl.innerHTML = "";
+
+        PRESETS.forEach(function (p) {
+            if (key) {
+                var match = p.keys.some(function (k) { return k.indexOf(key) !== -1; });
+                if (!match) return;
+            }
+
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "weather-option" + (p.label === currentPlace.label ? " current" : "");
+            btn.textContent = p.label;
+            btn.addEventListener("click", function () {
+                choosePreset(p);
+            });
+
+            dropdownEl.appendChild(btn);
+            count++;
+        });
+
+        return count;
+    }
+
+    function openDropdown(filterText) {
+        if (buildDropdown(filterText) === 0) {
+            closeDropdown();
+            return;
+        }
+
+        // 검색줄 바로 아래에서 시작해서 날씨 칸 안쪽에 꽉 차게 보여줘요.
+        var w = widget.getBoundingClientRect();
+        var r = searchRow.getBoundingClientRect();
+        dropdownEl.style.top = (r.bottom - w.top + 3) + "px";
+
+        dropdownEl.hidden = false;
+        dropdownEl.scrollTop = 0;
+        toggleBtn.setAttribute("aria-expanded", "true");
+    }
+
+    function closeDropdown() {
+        dropdownEl.hidden = true;
+        toggleBtn.setAttribute("aria-expanded", "false");
+    }
+
+    function choosePreset(place) {
+        inputEl.value = place.label;
+        closeDropdown();
+        savePlace(place);
+        loadWeather(place);
+    }
+
+    /* ===== 검색 ===== */
     function searchPlace() {
+        closeDropdown();
+
         var query = inputEl.value.trim();
         if (!query) {
             setMessage("도시 이름을 입력해 주세요.");
@@ -216,16 +302,49 @@
     }
 
     searchBtn.addEventListener("click", searchPlace);
+
     inputEl.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") searchPlace();
+        if (e.key === "Enter") {
+            searchPlace();
+        } else if (e.key === "Escape") {
+            closeDropdown();
+        }
+    });
+
+    // 검색창을 누르면 전체 목록을 보여줘요. (목록은 바깥을 누를 때까지 유지)
+    inputEl.addEventListener("focus", function () { openDropdown(""); });
+    inputEl.addEventListener("click", function () {
+        if (dropdownEl.hidden) openDropdown("");
+    });
+
+    // 글자를 입력하면 일치하는 지역만 보여줘요.
+    inputEl.addEventListener("input", function () {
+        openDropdown(inputEl.value);
+    });
+
+    // 아래 화살표: 목록 열기/닫기
+    toggleBtn.addEventListener("click", function () {
+        if (dropdownEl.hidden) {
+            openDropdown("");
+        } else {
+            closeDropdown();
+        }
+    });
+
+    // 검색줄이나 목록 바깥을 누르면 닫아요. (화면 크기 변화나 키보드 때문에는 닫지 않아요)
+    document.addEventListener("pointerdown", function (e) {
+        if (dropdownEl.hidden) return;
+        if (searchRow.contains(e.target) || dropdownEl.contains(e.target)) return;
+        closeDropdown();
     });
 
     /* 시작: 저장된 지역이 있으면 그곳, 없으면 천안 */
-    var startPlace = PRESETS[0];
+    var startPlace = DEFAULT_PLACE;
     try {
         var saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
         if (saved && typeof saved.lat === "number" && typeof saved.lon === "number" && saved.label) {
-            startPlace = saved;
+            // 목록에 있는 지역이면 항상 최신 좌표를 사용해요.
+            startPlace = findPreset(saved.label) || saved;
         }
     } catch (e) { /* 무시 */ }
 
